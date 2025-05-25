@@ -1,0 +1,160 @@
+/* Container chính */
+.booked-rooms-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Mỗi thẻ phòng */
+.booked-room-card {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.booked-room-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Tiêu đề */
+.booked-room-card h3 {
+    margin: 0 0 10px;
+    color: #007bff;
+}
+
+/* Các dòng thông tin */
+.booked-room-card p {
+    margin: 6px 0;
+    font-size: 15px;
+    color: #333;
+}
+
+/* Thông báo lỗi */
+.error-message {
+    color: red;
+    font-weight: bold;
+    margin: 15px 0;
+    padding: 10px;
+    background-color: #ffe6e6;
+    border: 1px solid red;
+    border-radius: 5px;
+    width: fit-content;
+}
+
+/* Tiêu đề trang */
+h2 {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 28px;
+    color: #333;
+}
+
+.room-image {
+    width: 100%;
+    max-height: 200px; 
+    object-fit: contain; 
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+
+  .button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.details-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.details-button:hover {
+    background-color: #0056b3;
+}
+
+.edit-button {
+    background-color: #28A745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.edit-button:hover {
+    background-color: #218838;
+}
+
+.cancel-button {
+    background-color: #FF0000;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cancel-button:hover {
+    background-color: #cc0000;
+}
+
+.room-details {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.edit-form {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.edit-form label {
+    display: block;
+    margin: 5px 0;
+}
+
+.edit-form input {
+    margin-left: 5px;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.save-button {
+    background-color: #28A745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.save-button:hover {
+    background-color: #218838;
+}
+
+.cancel-edit-button {
+    background-color: #6C757D;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cancel-edit-button:hover {
+    background-color: #5a6268;
+}

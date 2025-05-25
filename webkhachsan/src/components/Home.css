@@ -1,0 +1,273 @@
+/* Home.css */
+.home-container {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+.home-banner {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 50px;
+    margin-bottom: 30px;
+}
+
+.home-banner h1 {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.home-banner p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.search-banner {
+    position: relative;
+    margin-bottom: 30px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-image: url("../images/searchbar.jpg"); /* Đặt ảnh làm nền */
+    background-size: cover; /* Phủ kín div */
+    background-position: center; /* Căn giữa ảnh */
+    background-repeat: no-repeat; /* Không lặp lại ảnh */
+    min-height: 300px; /* Đảm bảo div có chiều cao để hiển thị ảnh */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Căn giữa SearchBar */
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    background-color: rgba(255, 255, 255, 0.8); /* Nền trắng mờ để SearchBar dễ nhìn */
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.search-bar button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-bar button:hover {
+    background-color: #45a049;
+}
+
+.promotion-container {
+    margin-bottom: 30px;
+}
+
+.promotion-item.banner {
+    border: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 100%;
+}
+
+.promotion-banner {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.promotion-item p {
+    margin: 5px 0;
+}
+
+/* Phần Khuyến mãi và Review */
+.hotel-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.promotion-item {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: calc(50% - 20px);
+    max-width: 500px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.promotion-item:hover {
+    transform: scale(1.02);
+}
+
+.promotion-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.promotion-item h3 {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.promotion-item p {
+    color: #777;
+    margin: 5px 0;
+}
+
+.khuyenmai-image {
+    width: 100%;
+    height: 200px; 
+    object-fit: contain; 
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+
+/* Tiêu đề chính */
+h1, h2 {
+    text-align: center;
+    color: #333;
+    margin: 20px 0;
+}
+
+
+.register-accommodation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #fff;
+}
+
+.register-accommodation h2 {
+    font-size: 24px;
+    color: #000;
+    margin-bottom: 20px;
+}
+
+.register-accommodation img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+.register-accommodation p {
+    font-size: 16px;
+    color: #000;
+    margin: 0;
+}
+
+.register-accommodation p a {
+    color: #1e90ff;
+    text-decoration: none;
+}
+
+.register-accommodation p a:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+.home-footer {
+    background-color: #333; /* Màu nền xám đậm giống hình ảnh 1 */
+    color: white;
+    padding: 40px 20px;
+    text-align: left;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #555; /* Đường viền phân cách */
+}
+
+.footer-column {
+    flex: 1;
+    min-width: 200px;
+    margin: 0 15px;
+}
+
+.footer-column h3 {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.footer-column p {
+    margin: 5px 0;
+    color: #ccc;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+
+.footer-column p:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* Đối tác thanh toán trong footer */
+.payment-partners-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.payment-partner-card {
+    width: 60px;
+    height: 40px;
+}
+
+.payment-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Phần thông tin bản quyền */
+.footer-bottom {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 0.9em;
+    color: #ccc;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .footer-column {
+        margin: 10px 0;
+    }
+
+    .payment-partners-grid {
+        justify-content: center;
+    }
+}

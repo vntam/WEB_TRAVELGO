@@ -1,0 +1,126 @@
+/* Container chính cho trang đăng ký */
+.dangky-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f2f5;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+  }
+  
+  /* Tiêu đề */
+  .dangky-container h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  /* Thông báo thành công hoặc lỗi */
+  .message {
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .message.success {
+    color: #2e7d32;
+    background-color: #e8f5e9;
+  }
+  
+  .message.error {
+    color: #d32f2f;
+    background-color: #ffebee;
+  }
+  
+  /* Form đăng ký */
+  .dangky-container form {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin-top: 0; /* Đặt form ở đầu */
+  }
+  
+  /* Khối input (label + input) */
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Label */
+  .form-group label {
+    display: block;
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Input */
+  .form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  
+  /* Hiệu ứng khi focus vào input */
+  .form-group input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  }
+  
+  /* Nút đăng ký */
+  .dangky-container button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  /* Hiệu ứng hover cho nút */
+  .dangky-container button:hover {
+    background-color: #218838;
+  }
+  
+  /* Nút khi đang loading */
+  .dangky-container button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  /* Responsive cho màn hình nhỏ */
+  @media (max-width: 600px) {
+    .dangky-container {
+      padding: 10px;
+    }
+  
+    .dangky-container h2 {
+      font-size: 1.5rem;
+    }
+  
+    .dangky-container form {
+      padding: 1.5rem;
+      max-width: 100%;
+    }
+  
+    .form-group input,
+    .dangky-container button {
+      font-size: 0.9rem;
+      padding: 0.6rem;
+    }
+  }
