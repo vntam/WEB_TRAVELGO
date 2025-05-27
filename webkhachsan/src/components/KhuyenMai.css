@@ -7,7 +7,7 @@
 }
 
 .promotion-item {
-  flex: 1 1 calc(33.333% - 20px); /* 3 items mỗi hàng, trừ đi khoảng gap */
+  flex: 1 1 calc(33.333% - 20px); 
   border: 1px solid #ccc;
   padding: 15px;
   border-radius: 4px;

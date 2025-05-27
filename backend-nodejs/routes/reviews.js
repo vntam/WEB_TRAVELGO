@@ -34,10 +34,10 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "Missing required fields", received: req.body });
     }
 
-    // Gán giá trị mặc định cho image_url nếu không có
+
     let processedImageUrl = image_url || "/default-image.jpg";
     if (image_url && image_url.startsWith("/")) {
-      processedImageUrl = `http://localhost:3000${image_url}`; // Chuyển thành URL tuyệt đối
+      processedImageUrl = `http://localhost:3000${image_url}`; 
     }
 
     console.log("Processed image_url:", processedImageUrl);

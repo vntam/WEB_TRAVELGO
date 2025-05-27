@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 
         connection = await getConnection();
 
-        // Lấy danh sách phòng của khách sạn
+    
         const roomQuery = `
             SELECT r.room_id, r.room_number, r.room_type, r.price, h.name AS hotel_name
             FROM rooms r 
@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
         `;
         const [rooms] = await connection.execute(roomQuery, [hotel_name]);
 
-        // Tính khoảng thời gian từng ngày
+
         const startDate = new Date(check_in);
         const endDate = new Date(check_out);
         const days = [];
@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
             days.push(new Date(d).toISOString().split('T')[0]);
         }
 
-        // Kiểm tra trạng thái từng phòng cho từng ngày
+
         const roomsWithAvailability = await Promise.all(
             rooms.map(async (room) => {
                 const availability = await Promise.all(

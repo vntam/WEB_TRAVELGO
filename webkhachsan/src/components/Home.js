@@ -88,7 +88,6 @@ const Home = () => {
         navigate('/khachsan', { state: { checkIn, checkOut } });
     };
 
-    // Thêm banner khuyến mãi cố định
     const weekendDealBanner = {
         promotion_id: 'banner-1',
         promotion_name: 'Deal tiết kiệm đi chơi cuối tuần',
@@ -104,13 +103,11 @@ const Home = () => {
         <div className="home-container">
             <Header />
             <h1>Chào mừng đến với hệ thống khách sạn</h1>
-            {/* Div bao quanh SearchBar với ảnh làm nền */}
             <div className="search-banner">
                 <SearchBar onSearch={handleSearch} />
             </div>
             <h2>Hoạt động của khách sạn</h2>
             <div className="promotion-container">
-                {/* Hiển thị banner khuyến mãi cố định */}
                 <div key={weekendDealBanner.promotion_id} className="promotion-item banner">
                     <img
                         src={weekendDealBanner.image}
@@ -154,7 +151,7 @@ const Home = () => {
                 )}
             </div>
 
-            {/* Phần Đối tác khách sạn */}
+
             <div className="partners-section">
                 <h2>Đối tác khách sạn</h2>
                 <p className="partners-description">Đối tác khách sạn trong nước và quốc tế</p>
@@ -173,7 +170,7 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* Phần Đối tác thanh toán */}
+
             <div className="partners-section">
                 <h2>Đối tác thanh toán</h2>
                 <p>Những đối tác thanh toán đáng tin cậy của chúng tôi sẽ giúp cho bạn luôn an tâm thực hiện mọi giao dịch một cách thuận lợi nhất!</p>
@@ -218,15 +215,12 @@ const Home = () => {
 
             <div className="home-footer">
                 <div className="footer-content">
-                    {/* Cột 1: Về chúng tôi */}
                     <div className="footer-column">
                         <h3>Về chúng tôi</h3>
                         <p>Tuyển dụng</p>
                         <p>Tuyền cộng tác viên</p>
                         <p>Chính sách</p>
                     </div>
-
-                    {/* Cột 2: Liên hệ với chúng tôi */}
                     <div className="footer-column">
                         <h3>Liên hệ với chúng tôi</h3>
                         <p>Facebook</p>
@@ -234,7 +228,7 @@ const Home = () => {
                         <p>Email</p>
                     </div>
 
-                    {/* Cột 3: Đối tác thanh toán */}
+
                     <div className="footer-column">
                         <h3>Đối tác thanh toán</h3>
                         <div className="payment-partners-grid">
@@ -247,7 +241,7 @@ const Home = () => {
                     </div>
                 </div>
 
-                {/* Thông tin bản quyền */}
+
                 <div className="footer-bottom">
                     <p>© 2025 Hệ thống khách sạn. All rights reserved.</p>
                 </div>

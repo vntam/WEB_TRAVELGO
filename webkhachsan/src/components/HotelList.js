@@ -142,7 +142,7 @@ function HotelList() {
       return;
     }
 
-    const imageUrl = `http://localhost:3000/images/room/room_${roomId}.jpg`; // Tự động lấy ảnh phòng
+    const imageUrl = `http://localhost:3000/images/room/room_${roomId}.jpg`; 
     console.log("Image URL being sent:", imageUrl);
 
     try {
@@ -159,7 +159,7 @@ function HotelList() {
           rating: parseInt(reviewData.rating),
           review_date: new Date().toISOString().split("T")[0],
           image_url: imageUrl,
-          room_id: roomId, // Gửi room_id để backend tham chiếu
+          room_id: roomId,
         }),
       });
 

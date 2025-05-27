@@ -4,7 +4,7 @@ const { getConnection } = require("../config/db");
 
 process.env.TZ = 'Asia/Ho_Chi_Minh';
 
-// Lấy danh sách booking của user
+
 router.get("/", async (req, res) => {
     let connection;
     try {
@@ -34,7 +34,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-// Tạo booking mới
+
 router.post("/", async (req, res) => {
     let connection;
     try {
@@ -51,7 +51,7 @@ router.post("/", async (req, res) => {
 
         connection = await getConnection();
 
-        // Kiểm tra tính khả dụng, không so sánh với booking_id vì đây là booking mới
+       
         const checkAvailabilityQuery = `
             SELECT NOT EXISTS (
                 SELECT 1 FROM booking 
@@ -71,7 +71,7 @@ router.post("/", async (req, res) => {
         `;
         const [result] = await connection.execute(query, [room_id, userId, check_in, check_out, total_price]);
 
-        // Trả về thông tin booking vừa tạo để frontend đồng bộ
+        
         const [newBooking] = await connection.execute(
             `SELECT b.*, r.room_number, r.room_type, h.name AS hotel_name 
              FROM booking b 
@@ -93,7 +93,7 @@ router.post("/", async (req, res) => {
     }
 });
 
-// Xóa booking
+
 router.delete("/:bookingId", async (req, res) => {
     let connection;
     try {
@@ -125,7 +125,7 @@ router.delete("/:bookingId", async (req, res) => {
     }
 });
 
-// Cập nhật booking
+
 router.put("/:bookingId", async (req, res) => {
     let connection;
     try {
@@ -177,7 +177,7 @@ router.put("/:bookingId", async (req, res) => {
             return res.status(404).json({ error: "Không tìm thấy booking hoặc bạn không có quyền chỉnh sửa" });
         }
 
-        // Trả về thông tin booking đã cập nhật
+        
         const [updatedBooking] = await connection.execute(
             `SELECT b.*, r.room_number, r.room_type, h.name AS hotel_name 
              FROM booking b 

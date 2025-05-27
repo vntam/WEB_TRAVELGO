@@ -126,8 +126,7 @@
     transform: translateY(-2px);
     box-shadow: 0 2px 10px rgba(52, 152, 219, 0.3);
   }
-  
-  /* Responsive */
+
   @media (max-width: 768px) {
     .support-title {
       font-size: 2em;

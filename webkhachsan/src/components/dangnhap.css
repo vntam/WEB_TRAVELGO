@@ -1,15 +1,15 @@
-/* Container chính cho trang đăng nhập */
+
 .login-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #f0f2f5; /* Màu nền nhẹ */
+    background-color: #f0f2f5; 
     padding: 20px;
     font-family: Arial, sans-serif;
-    min-height: 100vh; /* Giữ chiều cao tối thiểu để tránh tràn */
+    min-height: 100vh; 
   }
   
-  /* Tiêu đề */
+
   .login-container h2 {
     font-size: 2rem;
     color: #333;
@@ -17,7 +17,7 @@
     text-align: center;
   }
   
-  /* Thông báo lỗi */
+
   .error-message {
     color: #d32f2f;
     background-color: #ffebee;
@@ -30,7 +30,7 @@
     max-width: 400px;
   }
   
-  /* Form đăng nhập */
+
   .login-form {
     background-color: #fff;
     padding: 2rem;
@@ -38,15 +38,15 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
-    margin-top: 0; /* Đưa form lên đầu bằng cách loại bỏ margin-top mặc định */
+    margin-top: 0; 
   }
   
-  /* Khối input (label + input) */
+
   .form-group {
     margin-bottom: 1.5rem;
   }
   
-  /* Label */
+
   .form-group label {
     display: block;
     font-size: 1rem;
@@ -54,7 +54,7 @@
     margin-bottom: 0.5rem;
   }
   
-  /* Input */
+
   .form-group input {
     width: 100%;
     padding: 0.75rem;
@@ -65,13 +65,13 @@
     transition: border-color 0.3s, box-shadow 0.3s;
   }
   
-  /* Hiệu ứng khi focus vào input */
+
   .form-group input:focus {
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
   }
   
-  /* Nút đăng nhập */
+
   .login-form button {
     width: 100%;
     padding: 0.75rem;
@@ -84,12 +84,12 @@
     transition: background-color 0.3s;
   }
   
-  /* Hiệu ứng hover cho nút */
+
   .login-form button:hover {
     background-color: #0056b3;
   }
   
-  /* Responsive cho màn hình nhỏ */
+
   @media (max-width: 600px) {
     .login-container {
       padding: 10px;

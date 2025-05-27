@@ -9,7 +9,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Cấu hình multer để lưu ảnh (export để dùng trong router.js)
+
 const multer = require('multer');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -17,15 +17,14 @@ const storage = multer.diskStorage({
     cb(null, dir);
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname); // Tạo tên file duy nhất
+    cb(null, Date.now() + '-' + file.originalname); 
   }
 });
 const upload = multer({ storage: storage });
 
-// Phục vụ file tĩnh từ thư mục public
+
 app.use(express.static('public'));
 
-// Kết nối routes
 try {
     app.use('/api/auth', require('./routes/auth'));
     app.use('/api/hotels', require('./routes/hotels'));
@@ -38,11 +37,11 @@ try {
     process.exit(1);
 }
 
-// Khởi động server
+
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
 
-// Export upload để dùng trong router.js
+
 module.exports.upload = upload;

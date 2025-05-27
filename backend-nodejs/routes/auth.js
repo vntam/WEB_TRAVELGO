@@ -66,7 +66,7 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ message: 'Email đã được sử dụng' });
     }
 
-    // Không mã hóa mật khẩu, lưu trực tiếp
+
     const [result] = await connection.execute(
       'INSERT INTO signup (name, password, email, phone) VALUES (?, ?, ?, ?)',
       [name, password, email, phone]
