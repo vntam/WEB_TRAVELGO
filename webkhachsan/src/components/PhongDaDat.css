@@ -33,7 +33,7 @@
 .price-highlight {
     font-size: 16px;
     font-weight: bold;
-    color: #d9534f; /* Màu đỏ đậm để nổi bật */
+    color: #d9534f; 
 }
 
 .status-pending {

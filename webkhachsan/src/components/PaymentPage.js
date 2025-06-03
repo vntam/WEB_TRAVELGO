@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react"; // Thêm useCallback
 import { useLocation } from "react-router-dom";
 import './PaymentPage.css';
 
@@ -13,12 +13,12 @@ const PaymentPage = () => {
     const paymentDeadline = new Date(startTime);
     paymentDeadline.setMinutes(paymentDeadline.getMinutes() + 25);
 
-    // Calculate total seconds from now until paymentDeadline
-    const calculateTimeLeft = () => {
+    // Memo hóa calculateTimeLeft bằng useCallback
+    const calculateTimeLeft = useCallback(() => {
         const now = new Date();
         const difference = Math.max(0, Math.floor((paymentDeadline - now) / 1000));
         return difference;
-    };
+    }, [paymentDeadline]); // Thêm paymentDeadline vào mảng phụ thuộc của useCallback
 
     const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
@@ -27,7 +27,7 @@ const PaymentPage = () => {
             setTimeLeft(calculateTimeLeft());
         }, 1000);
         return () => clearInterval(timer);
-    }, []);
+    }, [calculateTimeLeft]); // Thêm calculateTimeLeft vào mảng phụ thuộc
 
     useEffect(() => {
         const fetchBookingDetails = async () => {

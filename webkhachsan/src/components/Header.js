@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import './Header.css'; 
 
 const Header = () => {
     const [user, setUser] = useState(null);
+    const location = useLocation(); 
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -18,25 +19,27 @@ const Header = () => {
         window.location.href = '/';
     };
 
+    const isActive = (path) => location.pathname === path;
+
     return (
         <nav>
             <div className="logo">
-                <Link to="/">TRAVELGO</Link>
+                <Link to="/" className={isActive('/') }>TRAVELGO</Link>
             </div>
             <div className="nav-links">
-                <Link to="/hotels">Khách sạn</Link>
-                <Link to="/bookings">Phòng Đã Đặt</Link>
-                <Link to="/promotions">Khuyến mãi</Link>
-                <Link to="/reviews">Review</Link>
-                <Link to="/support">Hỗ trợ</Link>
+                <Link to="/hotels" className={isActive('/hotels') ? 'active' : ''}>Khách sạn</Link>
+                <Link to="/bookings" className={isActive('/bookings') ? 'active' : ''}>Phòng Đã Đặt</Link>
+                <Link to="/promotions" className={isActive('/promotions') ? 'active' : ''}>Khuyến mãi</Link>
+                <Link to="/reviews" className={isActive('/reviews') ? 'active' : ''}>Review</Link>
+                <Link to="/support" className={isActive('/support') ? 'active' : ''}>Hỗ trợ</Link>
             </div>
             <div className="user-section">
                 {user ? (
                     <button onClick={handleLogout}>Đăng xuất</button>
                 ) : (
                     <>
-                        <Link to="/login">Đăng nhập</Link>
-                        <Link to="/signup">Đăng Kí</Link>
+                        <Link to="/login" className={isActive('/login') ? 'active' : ''}>Đăng nhập</Link>
+                        <Link to="/signup" className={isActive('/signup') ? 'active' : ''}>Đăng Kí</Link>
                     </>
                 )}
             </div>

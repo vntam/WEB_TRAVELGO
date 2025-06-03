@@ -90,33 +90,35 @@ function HotelList() {
       navigate("/login");
       return;
     }
+    if (window.confirm("Bạn có chắc chắn muốn hủy đặt phòng này không?")) {
+      try {
+        const response = await fetch("http://localhost:3000/api/bookings", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${user.id}`,
+          },
+          body: JSON.stringify({
+            room_id: roomId,
+            check_in: checkIn,
+            check_out: checkOut,
+            total_price: price,
+          }),
+        });
 
-    try {
-      const response = await fetch("http://localhost:3000/api/bookings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${user.id}`,
-        },
-        body: JSON.stringify({
-          room_id: roomId,
-          check_in: checkIn,
-          check_out: checkOut,
-          total_price: price,
-        }),
-      });
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
 
-      if (!response.ok) {
-        throw new Error(await response.text());
+        const result = await response.json();
+        alert(`Đặt phòng thành công!`);
+        fetchRooms(selectedHotelName);
+
+      } catch (err) {
+        console.error("Error booking room:", err);
+        setError("Không thể đặt phòng: " + err.message);
       }
-
-      const result = await response.json();
-      alert(`Đặt phòng thành công! Mã đặt phòng: ${result.booking_id}`);
-      fetchRooms(selectedHotelName);
-    } catch (err) {
-      console.error("Error booking room:", err);
-      setError("Không thể đặt phòng: " + err.message);
-    }
+  }
   };
 
   const handleReviewSubmit = async (roomId, hotelId) => {
@@ -210,7 +212,7 @@ function HotelList() {
         }}
       >
         <div className="form-group">
-          <label>Điểm số (1-5):</label>
+          <label>Đánh giá phòng trong thang điểm này! (1-5):</label>
           <input
             type="number"
             min="1"

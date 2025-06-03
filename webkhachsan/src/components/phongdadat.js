@@ -55,7 +55,7 @@ function PhongDaDat() {
                 }
 
                 const data = await response.json();
-                console.log("Dữ liệu API trả về:", data); // Kiểm tra dữ liệu API
+                console.log("Dữ liệu API trả về:", data); 
                 setBookedRooms(data);
             } catch (err) {
                 console.error("Error fetching booked rooms:", err);
@@ -141,13 +141,11 @@ function PhongDaDat() {
     };
 
     const handlePayment = (bookingId) => {
-        // Chỉ truyền bookingId qua query params
         window.open(`/payment?bookingId=${bookingId}`, '_blank');
     };
 
     if (loading) return <div>Đang tải...</div>;
 
-    // Lọc các phòng đã xác nhận (status = 1)
     const confirmedRooms = bookedRooms.filter(room => room.status === 1);
 
     return (
@@ -181,12 +179,14 @@ function PhongDaDat() {
                                 <button
                                     onClick={() => handleEditBooking(room)}
                                     className="edit-button"
+                                    disabled={room.status === 1}
                                 >
                                     Chỉnh Sửa
                                 </button>
                                 <button
                                     onClick={() => handleCancelBooking(room.booking_id)}
                                     className="cancel-button"
+                                    disabled={room.status === 1}
                                 >
                                     Hủy
                                 </button>
@@ -231,7 +231,6 @@ function PhongDaDat() {
                 <p>Bạn chưa có phòng nào được đặt.</p>
             )}
 
-            {/* Phần Thanh Toán cho các phòng đã xác nhận */}
             <h2>Thanh Toán</h2>
             {confirmedRooms.length > 0 ? (
                 <div className="booked-rooms-container">

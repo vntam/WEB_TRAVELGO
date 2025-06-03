@@ -186,8 +186,10 @@ const Home = () => {
 
             <div className='register-accommodation'>
                 <h2>Đăng kí nơi nghỉ của bạn</h2>
-                <img src={nghi_duong} alt="Mô tả hình ảnh" />
+                <img src={nghi_duong} alt="Mô tả hình ảnh"  className="promotion-banner"/>
                 <p>Tiếp cận hàng triệu khách hàng tiềm năng và nâng tầm doanh nghiệp của bạn với chúng tôi.</p>
+                <p>Chúng tôi cung cấp nền tảng chuyên nghiệp để bạn quảng bá khách sạn, khu nghỉ dưỡng hoặc dịch vụ lưu trú của mình đến mọi miền đất nước.</p>
+                <p>Hãy gia nhập mạng lưới đối tác của chúng tôi để nhận được hỗ trợ tối ưu và tăng doanh thu một cách hiệu quả.</p>
             </div>
 
             <h2>Khuyến mãi của chúng tôi</h2>

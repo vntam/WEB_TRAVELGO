@@ -69,25 +69,41 @@
 
 .promotion-container {
     margin-bottom: 30px;
+    padding: 20px;
+    max-width: 1500px;
+    margin : auto;
 }
 
 .promotion-item.banner {
     border: none;
-    padding: 0;
+    padding: 20px;
     margin: 0 auto;
     max-width: 100%;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
 .promotion-banner {
     width: 100%;
     height: auto;
     border-radius: 5px;
+    margin-bottom: 15px;
+    max-height: 400px; 
+    object-fit: cover;
 }
 
 .promotion-item p {
-    margin: 5px 0;
+    margin: 10px 0;
+    text-align: center;
+    flex-grow: 1; 
 }
-
 
 .hotel-list {
     display: flex;
@@ -136,8 +152,7 @@
     object-fit: contain; 
     border-radius: 5px;
     margin-bottom: 10px;
-  }
-
+}
 
 h1, h2 {
     text-align: center;
@@ -145,18 +160,18 @@ h1, h2 {
     margin: 20px 0;
 }
 
-
 .register-accommodation {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     padding: 20px;
-    max-width: 600px;
-    margin: 0 auto;
+    max-width: 1500px;
+    margin: 30px auto;
     border: 1px solid #ccc;
     border-radius: 10px;
     background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .register-accommodation h2 {
@@ -186,7 +201,6 @@ h1, h2 {
 .register-accommodation p a:hover {
     text-decoration: underline;
 }
-
 
 .home-footer {
     background-color: #333; 
@@ -229,7 +243,6 @@ h1, h2 {
     text-decoration: underline;
 }
 
-
 .payment-partners-grid {
     display: flex;
     flex-wrap: wrap;
@@ -247,14 +260,12 @@ h1, h2 {
     object-fit: contain;
 }
 
-
 .footer-bottom {
     text-align: center;
     padding: 20px 0;
     font-size: 0.9em;
     color: #ccc;
 }
-
 
 @media (max-width: 768px) {
     .footer-content {

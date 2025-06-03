@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from "./Header.js";
-import "./KhuyenMai.css"; // Tạo file CSS mới
+import "./KhuyenMai.css"; 
 
 import khuyenmai_1 from '../images/promotion/khuyenmai_1.jpg';
 import khuyenmai_2 from '../images/promotion/khuyenmai_2.jpg';
