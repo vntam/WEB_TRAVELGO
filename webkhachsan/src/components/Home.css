@@ -42,7 +42,7 @@
     display: flex;
     justify-content: center;
     gap: 10px;
-    background-color: rgba(255, 255, 255, 0.8); /* Nền trắng mờ để SearchBar dễ nhìn */
+    background-color: rgba(255, 255, 255, 0.8); 
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -88,7 +88,7 @@
     margin: 5px 0;
 }
 
-/* Phần Khuyến mãi và Review */
+
 .hotel-list {
     display: flex;
     flex-wrap: wrap;
@@ -138,7 +138,7 @@
     margin-bottom: 10px;
   }
 
-/* Tiêu đề chính */
+
 h1, h2 {
     text-align: center;
     color: #333;
@@ -187,9 +187,9 @@ h1, h2 {
     text-decoration: underline;
 }
 
-/* Footer */
+
 .home-footer {
-    background-color: #333; /* Màu nền xám đậm giống hình ảnh 1 */
+    background-color: #333; 
     color: white;
     padding: 40px 20px;
     text-align: left;
@@ -202,7 +202,7 @@ h1, h2 {
     max-width: 1200px;
     margin: 0 auto;
     padding-bottom: 20px;
-    border-bottom: 1px solid #555; /* Đường viền phân cách */
+    border-bottom: 1px solid #555; 
 }
 
 .footer-column {
@@ -229,7 +229,7 @@ h1, h2 {
     text-decoration: underline;
 }
 
-/* Đối tác thanh toán trong footer */
+
 .payment-partners-grid {
     display: flex;
     flex-wrap: wrap;
@@ -247,7 +247,7 @@ h1, h2 {
     object-fit: contain;
 }
 
-/* Phần thông tin bản quyền */
+
 .footer-bottom {
     text-align: center;
     padding: 20px 0;
@@ -255,7 +255,7 @@ h1, h2 {
     color: #ccc;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
     .footer-content {
         flex-direction: column;

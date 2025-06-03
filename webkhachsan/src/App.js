@@ -8,7 +8,7 @@ import Review from './components/review.js';
 import DangNhap from './components/dangnhap.js';
 import DangKi from './components/dangki.js'
 import Bookings from './components/phongdadat.js'
-
+import PaymentPage from './components/PaymentPage';
 
 function App() {
     return (
@@ -22,7 +22,7 @@ function App() {
                 <Route path="/reviews" element={<Review />} />
                 <Route path="/login" element={<DangNhap />} />
                 <Route path="/signup" element={<DangKi />} />
-
+                <Route path="/payment" element={<PaymentPage />} />
             </Routes>
         </Router>
     );

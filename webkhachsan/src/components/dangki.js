@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom'; 
 import './dangki.css';
 
 function DangKy() {
@@ -22,7 +22,7 @@ function DangKy() {
     setIsLoading(true);
     setMessage('');
 
-    // Validate client-side
+
     if (!formData.name || !formData.password || !formData.email || !formData.phone) {
       setMessage('Vui lòng điền đầy đủ thông tin');
       setIsLoading(false);
@@ -63,7 +63,7 @@ function DangKy() {
 
       setMessage('Đăng ký thành công!');
       setFormData({ name: '', password: '', email: '', phone: '' });
-      // Chuyển hướng về trang chủ sau 2 giây
+
       setTimeout(() => navigate('/'), 2000);
     } catch (error) {
       console.error('Error:', error);

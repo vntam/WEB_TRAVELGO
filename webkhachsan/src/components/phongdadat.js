@@ -55,6 +55,7 @@ function PhongDaDat() {
                 }
 
                 const data = await response.json();
+                console.log("Dữ liệu API trả về:", data); // Kiểm tra dữ liệu API
                 setBookedRooms(data);
             } catch (err) {
                 console.error("Error fetching booked rooms:", err);
@@ -139,7 +140,15 @@ function PhongDaDat() {
         setDetailsRoom(detailsRoom?.booking_id === room.booking_id ? null : room);
     };
 
+    const handlePayment = (bookingId) => {
+        // Chỉ truyền bookingId qua query params
+        window.open(`/payment?bookingId=${bookingId}`, '_blank');
+    };
+
     if (loading) return <div>Đang tải...</div>;
+
+    // Lọc các phòng đã xác nhận (status = 1)
+    const confirmedRooms = bookedRooms.filter(room => room.status === 1);
 
     return (
         <div>
@@ -158,10 +167,10 @@ function PhongDaDat() {
                                 className="room-image"
                             />
                             <p>Phòng: {room.room_number} - Loại: {room.room_type}</p>
-                            <p>Giá: {room.price.toLocaleString()} VNĐ</p>
+                            <p className="price-highlight">Giá: <strong>{room.price.toLocaleString()} VNĐ</strong></p>
                             <p>Ngày nhận: {formatDate(room.check_in)}</p>
                             <p>Ngày trả: {formatDate(room.check_out)}</p>
-                            <p>Trạng thái: {room.status === 0 ? "Chờ xác nhận" : "Đã xác nhận"}</p>
+                            <p className={room.status === 0 ? "status-pending" : "status-confirmed"}>Trạng thái: {room.status === 0 ? "Chờ xác nhận" : "Đã xác nhận"}</p>
                             <div className="button-group">
                                 <button
                                     onClick={() => handleViewDetails(room)}
@@ -220,6 +229,38 @@ function PhongDaDat() {
                 </div>
             ) : (
                 <p>Bạn chưa có phòng nào được đặt.</p>
+            )}
+
+            {/* Phần Thanh Toán cho các phòng đã xác nhận */}
+            <h2>Thanh Toán</h2>
+            {confirmedRooms.length > 0 ? (
+                <div className="booked-rooms-container">
+                    {confirmedRooms.map((room) => (
+                        <div key={room.booking_id} className="booked-room-card">
+                            <h3>{room.hotel_name}</h3>
+                            <img
+                                src={room_img[room.room_id]}
+                                alt={room.room_number}
+                                className="room-image"
+                            />
+                            <p>Phòng: {room.room_number} - Loại: {room.room_type}</p>
+                            <p className="price-highlight">Giá: <strong>{room.price.toLocaleString()} VNĐ</strong></p>
+                            <p>Ngày nhận: {formatDate(room.check_in)}</p>
+                            <p>Ngày trả: {formatDate(room.check_out)}</p>
+                            <p className="status-confirmed">Trạng thái: Đã xác nhận</p>
+                            <div className="button-group">
+                                <button
+                                    onClick={() => handlePayment(room.booking_id)}
+                                    className="payment-button"
+                                >
+                                    Thanh Toán
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <p>Không có phòng nào đã xác nhận để thanh toán.</p>
             )}
         </div>
     );
