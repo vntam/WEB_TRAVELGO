@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Header.css';
 
-const Header = ({ userId, onLogout }) => {
+const Header = ({ userId, onLogout, onPaymentSuccess }) => {
     const [user, setUser] = useState(null);
     const [notifications, setNotifications] = useState([]);
     const [showNotifications, setShowNotifications] = useState(false);
@@ -37,7 +37,6 @@ const Header = ({ userId, onLogout }) => {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${userId}`,
                 },
             })
                 .then(res => res.json())
@@ -65,6 +64,10 @@ const Header = ({ userId, onLogout }) => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    const handlePaymentSuccess = (bookingId) => {
+        setNotifications(prev => prev.filter(n => n.booking_id !== bookingId));
+    };
 
     const handleLogout = () => {
         setUser(null);
@@ -100,16 +103,19 @@ const Header = ({ userId, onLogout }) => {
                         <Link to="/manage-roombooked" className={isActive('/manage-roombooked') ? 'active' : ''}>Quản lí các Phòng</Link>
                         <Link to="/manage-invoices" className={isActive('/manage-invoices') ? 'active' : ''}>Quản lý Hóa đơn</Link>
                         <Link to="/manage-reviews" className={isActive('/manage-reviews') ? 'active' : ''}>Quản lý Bài đánh giá</Link>
+                        <Link to="/manage-deposits" className={isActive('/manage-deposits') ? 'active' : ''}>Quản lý Tiền nạp</Link>
                     </>
-                ) : (
+                ) : user && user.role === 'customer' ? (
                     <>
                         <Link to="/hotels" className={isActive('/hotels') ? 'active' : ''}>Khách sạn</Link>
                         <Link to="/bookings" className={isActive('/bookings') ? 'active' : ''}>Phòng Đã Đặt</Link>
                         <Link to="/promotions" className={isActive('/promotions') ? 'active' : ''}>Khuyến mãi</Link>
                         <Link to="/reviews" className={isActive('/reviews') ? 'active' : ''}>Review</Link>
                         <Link to="/support" className={isActive('/support') ? 'active' : ''}>Hỗ trợ</Link>
+                        <Link to="/deposit" className={isActive('/deposit') ? 'active' : ''}>Nạp tiền</Link>
+                        <Link to={`/transaction-history/${userId}`} className={isActive(`/transaction-history/${userId}`) ? 'active' : ''}>Lịch Sử Giao Dịch</Link> {/* Thêm liên kết này */}
                     </>
-                )}
+                ) : null}
             </div>
             <div className="user-section">
                 {user ? (

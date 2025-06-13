@@ -20,10 +20,7 @@ const DangNhap = ({ onLoginSuccess }) => {
       const response = await fetch('http://localhost:3000/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          username: email,
-          password 
-        }),
+        body: JSON.stringify({ username: email, password }),
       });
 
       const data = await response.json();
@@ -31,7 +28,7 @@ const DangNhap = ({ onLoginSuccess }) => {
         throw new Error(data.error || 'Đăng nhập thất bại');
       }
 
-      localStorage.setItem('user', JSON.stringify(data.user)); // Lưu thông tin người dùng vào localStorage
+      localStorage.setItem('user', JSON.stringify(data.user)); // Lưu thông tin người dùng
       if (onLoginSuccess) {
         onLoginSuccess(data.user.id); // Truyền userId lên App.js
       }
@@ -62,6 +59,7 @@ const DangNhap = ({ onLoginSuccess }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            placeholder="Nhập email của bạn"
           />
         </div>
         <div className="form-group">
@@ -71,6 +69,7 @@ const DangNhap = ({ onLoginSuccess }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            placeholder="Nhập mật khẩu"
           />
         </div>
         <button type="submit" disabled={isLoading}>

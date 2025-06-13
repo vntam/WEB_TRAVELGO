@@ -1,0 +1,119 @@
+.deposit-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+}
+
+.deposit-container h2 {
+    color: #1e3a8a;
+    margin-bottom: 25px;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.deposit-options {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.deposit-options button {
+    padding: 12px 25px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: transform 0.2s, background-color 0.2s;
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+}
+
+.deposit-options button:hover {
+    background-color: #2563eb;
+    transform: translateY(-2px);
+}
+
+.deposit-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.deposit-form label {
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.deposit-form input[type="number"] {
+    padding: 12px;
+    width: 100%;
+    max-width: 350px;
+    margin-bottom: 20px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.deposit-form input[type="number"]:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.deposit-form button {
+    padding: 14px 30px;
+    background-color: #10b981;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+}
+
+.deposit-form button:hover {
+    background-color: #059669;
+    transform: translateY(-2px);
+}
+
+.error {
+    color: #dc2626;
+    margin-bottom: 15px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.success {
+    color: #10b981;
+    margin-bottom: 15px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .deposit-container {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .deposit-options button {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    .deposit-form input[type="number"] {
+        max-width: 100%;
+    }
+}

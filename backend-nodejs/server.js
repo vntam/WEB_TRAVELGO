@@ -41,6 +41,7 @@ try {
   app.use('/api/reviews', require('./routes/reviews')); // Sửa tên file thành reviews.js
   app.use('/api/bookings', require('./routes/bookings'));
   app.use('/api/invoices', require('./routes/invoices')); // Thêm route cho invoices
+  app.use('/api/deposits', require('./routes/depositRoutes'));
 } catch (error) {
   console.error('Error loading routes:', error);
   process.exit(1);

@@ -10,12 +10,13 @@ const ManagerRoomBooked = () => {
         const fetchBookings = async () => {
             try {
                 const user = JSON.parse(localStorage.getItem('user'));
-                if (!user || user.role !== 'admin') {
-                    setError('Chỉ admin mới có quyền truy cập trang này');
+                if (!user || !user.id || user.role !== 'admin') {
+                    setError('Chỉ admin mới có quyền truy cập trang này hoặc vui lòng đăng nhập lại.');
                     setLoading(false);
                     return;
                 }
 
+                console.log('Fetching bookings with userId:', user.id);
                 const response = await fetch('http://localhost:3000/api/bookings/admin', {
                     headers: {
                         'Content-Type': 'application/json',
@@ -24,15 +25,17 @@ const ManagerRoomBooked = () => {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Lỗi khi lấy danh sách đặt phòng');
+                    const errorText = await response.text();
+                    throw new Error(`Lỗi khi lấy danh sách đặt phòng: ${response.status} - ${errorText}`);
                 }
 
                 const data = await response.json();
+                console.log('Bookings data received:', data);
                 setBookings(data);
                 setLoading(false);
             } catch (err) {
                 console.error('Error fetching bookings:', err);
-                setError('Lỗi khi tải danh sách đặt phòng');
+                setError(`Lỗi khi tải danh sách đặt phòng: ${err.message}`);
                 setLoading(false);
             }
         };
@@ -66,7 +69,8 @@ const ManagerRoomBooked = () => {
             });
 
             if (!response.ok) {
-                throw new Error('Lỗi khi xác nhận đặt phòng');
+                const errorText = await response.text();
+                throw new Error(`Lỗi khi xác nhận đặt phòng: ${response.status} - ${errorText}`);
             }
 
             setBookings(bookings.map(booking =>
@@ -75,7 +79,7 @@ const ManagerRoomBooked = () => {
             alert('Xác nhận đặt phòng thành công!');
         } catch (err) {
             console.error('Error approving booking:', err);
-            setError('Lỗi khi xác nhận đặt phòng');
+            setError(`Lỗi khi xác nhận đặt phòng: ${err.message}`);
         }
     };
 
@@ -92,14 +96,15 @@ const ManagerRoomBooked = () => {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Lỗi khi từ chối đặt phòng');
+                    const errorText = await response.text();
+                    throw new Error(`Lỗi khi từ chối đặt phòng: ${response.status} - ${errorText}`);
                 }
 
                 setBookings(bookings.filter(booking => booking.booking_id !== bookingId));
                 alert('Từ chối đặt phòng thành công!');
             } catch (err) {
                 console.error('Error rejecting booking:', err);
-                setError('Lỗi khi từ chối đặt phòng');
+                setError(`Lỗi khi từ chối đặt phòng: ${err.message}`);
             }
         }
     };
@@ -138,10 +143,10 @@ const ManagerRoomBooked = () => {
                         {pendingBookings.map(booking => (
                             <tr key={booking.booking_id}>
                                 <td>{booking.booking_id}</td>
-                                <td>{booking.user_name}</td>
-                                <td>{booking.hotel_name}</td>
-                                <td>{booking.room_number} ({booking.room_type})</td>
-                                <td>{formatPrice(booking.total_price)} VNĐ</td>
+                                <td>{booking.user_name || 'Không xác định'}</td>
+                                <td>{booking.hotel_name || 'Không xác định'}</td>
+                                <td>{booking.room_number} ({booking.room_type || 'Không xác định'})</td>
+                                <td>{formatPrice(booking.total_price || 0)} VNĐ</td>
                                 <td>{formatDate(booking.check_in)}</td>
                                 <td>{formatDate(booking.check_out)}</td>
                                 <td>

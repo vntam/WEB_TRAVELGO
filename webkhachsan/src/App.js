@@ -14,6 +14,9 @@ import ManageUsers from './components/ManageUsers.js';
 import ManageInvoices from './components/ManageInvoices.js';
 import ManageReviews from './components/ManageReviews.js';
 import ManagerRoomBooked from './components/ManagerRoomBooked.js';
+import Deposit from './components/Deposit'; // Thêm component Deposit
+import ManageDeposits from './components/ManageDeposits'; // Thêm component ManageDeposits
+import TransactionHistory from './components/TransactionHistory'; // Thêm import này
 
 function App() {
     const [userId, setUserId] = useState(null);
@@ -25,22 +28,25 @@ function App() {
         }
     }, []);
 
-
     const handleLoginSuccess = (id) => {
         setUserId(id);
         localStorage.setItem('userId', id); 
     };
 
-    // Hàm để xử lý đăng xuất
     const handleLogout = () => {
         setUserId(null);
         localStorage.removeItem('userId');
         localStorage.removeItem('user'); 
     };
 
+    const handlePaymentSuccess = (bookingId) => {
+        // Logic để cập nhật thông báo trong Header (truyền qua props)
+        // Không cần xử lý trực tiếp ở đây, chỉ truyền xuống Header
+    };
+
     return (
         <Router>
-            <Header userId={userId} onLogout={handleLogout} />
+            <Header userId={userId} onLogout={handleLogout} onPaymentSuccess={handlePaymentSuccess} />
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/hotels" element={<HotelList />} />
@@ -50,11 +56,14 @@ function App() {
                 <Route path="/reviews" element={<Review />} />
                 <Route path="/login" element={<DangNhap onLoginSuccess={handleLoginSuccess} />} />
                 <Route path="/signup" element={<DangKi />} />
-                <Route path="/payment" element={<PaymentPage />} />
+                <Route path="/payment" element={<PaymentPage onPaymentSuccess={handlePaymentSuccess} />} />
                 <Route path="/manage-users" element={<ManageUsers />} />
                 <Route path="/manage-invoices" element={<ManageInvoices />} />
                 <Route path="/manage-reviews" element={<ManageReviews />} />
                 <Route path="/manage-roombooked" element={<ManagerRoomBooked />} />
+                <Route path="/deposit" element={<Deposit userId={userId} />} /> {/* Thêm route cho nạp tiền */}
+                <Route path="/manage-deposits" element={<ManageDeposits userId={userId} />} /> {/* Thêm route cho quản lý nạp tiền */}
+                <Route path="/transaction-history/:userId" element={<TransactionHistory />} />
             </Routes>
         </Router>
     );

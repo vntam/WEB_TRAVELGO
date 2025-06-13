@@ -67,7 +67,7 @@ const ManageInvoices = () => {
                 setLoading(false);
             } catch (err) {
                 console.error('Error fetching invoices:', err);
-                setError('Lỗi khi tải danh sách hóa đơn');
+                setError('Lỗi khi tải danh sách hóa đơn: ' + err.message);
                 setLoading(false);
             }
         };
@@ -101,16 +101,18 @@ const ManageInvoices = () => {
             });
 
             if (!response.ok) {
-                throw new Error('Lỗi khi xác nhận hóa đơn');
+                const errorText = await response.text();
+                throw new Error(errorText || 'Lỗi khi xác nhận hóa đơn');
             }
 
+            const updatedInvoice = await response.json();
             setInvoices(invoices.map(invoice =>
-                invoice.invoice_id === invoiceId ? { ...invoice, status: 'completed' } : invoice
+                invoice.invoice_id === invoiceId ? { ...invoice, ...updatedInvoice } : invoice
             ));
             alert('Xác nhận hóa đơn thành công!');
         } catch (err) {
             console.error('Error approving invoice:', err);
-            setError('Lỗi khi xác nhận hóa đơn');
+            setError('Lỗi khi xác nhận hóa đơn: ' + err.message);
         }
     };
 
@@ -127,16 +129,18 @@ const ManageInvoices = () => {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Lỗi khi từ chối hóa đơn');
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Lỗi khi từ chối hóa đơn');
                 }
 
+                const updatedInvoice = await response.json();
                 setInvoices(invoices.map(invoice =>
-                    invoice.invoice_id === invoiceId ? { ...invoice, status: 'rejected' } : invoice
+                    invoice.invoice_id === invoiceId ? { ...invoice, ...updatedInvoice } : invoice
                 ));
                 alert('Từ chối hóa đơn thành công!');
             } catch (err) {
                 console.error('Error rejecting invoice:', err);
-                setError('Lỗi khi từ chối hóa đơn');
+                setError('Lỗi khi từ chối hóa đơn: ' + err.message);
             }
         }
     };
