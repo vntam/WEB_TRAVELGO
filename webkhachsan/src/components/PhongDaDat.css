@@ -1,182 +1,271 @@
-.booked-rooms-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 20px;
-    padding: 20px;
-}
-
-.booked-room-card {
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    padding: 15px 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    text-align: center;
-}
-
-.booked-room-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-}
-
-.booked-room-card h3 {
-    margin: 0 0 10px;
-    color: #007bff;
-}
-
-.booked-room-card p {
-    margin: 6px 0;
-    font-size: 15px;
-    color: #333;
-}
-
-.price-highlight {
-    font-size: 16px;
-    font-weight: bold;
-    color: #d9534f; 
-}
-
-.status-pending {
-    color: red !important;
-}
-
-.status-confirmed {
-    color: green !important;
-}
-
-.error-message {
-    color: red;
-    font-weight: bold;
-    margin: 15px 0;
-    padding: 10px;
-    background-color: #ffe6e6;
-    border: 1px solid red;
-    border-radius: 5px;
-    width: fit-content;
+/* PhongDaDat.css */
+.booked-rooms {
+    padding: 40px 20px;
+    max-width: 1280px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
 }
 
 h2 {
     text-align: center;
-    margin-top: 20px;
-    font-size: 28px;
-    color: #333;
+    color: #1a202c;
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 32px;
+    letter-spacing: -0.025em;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, #2d3748, #4a5568);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.booked-rooms-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    padding: 20px;
+}
+
+.booked-room-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.booked-room-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.booked-room-card h3 {
+    margin: 0 0 12px;
+    color: #2d3748;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.booked-room-card p {
+    margin: 8px 0;
+    font-size: 1rem;
+    color: #4a5568;
+}
+
+.price-highlight {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #d53f8c;
+}
+
+.status-pending {
+    color: #d69e2e;
+    font-weight: 600;
+    padding: 4px 12px;
+    background: #fefcbf;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.status-paid {
+    color: #38a169;
+    font-weight: 600;
+    padding: 4px 12px;
+    background: #c6f6d5;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.status-rejected {
+    color: #e53e3e;
+    font-weight: 600;
+    padding: 4px 12px;
+    background: #fed7d7;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.error-message {
+    color: #e53e3e;
+    font-weight: 600;
+    margin: 20px auto;
+    padding: 16px;
+    background: #fff5f5;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 600px;
+    box-shadow: 0 2px 8px rgba(229, 62, 62, 0.1);
 }
 
 .room-image {
     width: 100%;
-    max-height: 200px;
-    object-fit: contain;
-    border-radius: 5px;
-    margin-bottom: 10px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border: 2px solid #edf2f7;
 }
 
 .button-group {
     display: flex;
-    gap: 10px;
-    margin-top: 10px;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
 }
 
-.details-button {
-    background-color: #007BFF;
-    color: white;
+.details-button, .edit-button, .cancel-button, .reject-button {
+    background: linear-gradient(90deg, #4c51bf, #6b46c1);
+    color: #ffffff;
     border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
+    padding: 10px 20px;
+    border-radius: 25px;
     cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.details-button:hover {
-    background-color: #0056b3;
+.details-button:hover, .edit-button:hover, .cancel-button:hover, .reject-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.edit-button {
-    background-color: #28A745;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
+.edit-button { background: linear-gradient(90deg, #38a169, #2f855a); }
+.cancel-button { background: linear-gradient(90deg, #e53e3e, #c53030); }
+.reject-button { background: linear-gradient(90deg, #744210, #975a16); }
+
+.room-details, .edit-form {
+    margin-top: 16px;
+    padding: 16px;
+    background: #f7fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.edit-button:hover {
-    background-color: #218838;
-}
-
-.cancel-button {
-    background-color: #FF0000;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.cancel-button:hover {
-    background-color: #cc0000;
-}
-
-.payment-button {
-    background-color: #FF8C00;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.payment-button:hover {
-    background-color: #e07b00;
-}
-
-.room-details {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #f8f9fa;
-    border-radius: 4px;
-}
-
-.edit-form {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #f8f9fa;
-    border-radius: 4px;
+.room-details h4, .edit-form h4 {
+    margin: 0 0 12px;
+    font-size: 1.2rem;
+    color: #2d3748;
+    font-weight: 700;
 }
 
 .edit-form label {
     display: block;
-    margin: 5px 0;
+    margin: 12px 0;
+    font-size: 1rem;
+    color: #2d3748;
 }
 
 .edit-form input {
-    margin-left: 5px;
-    padding: 5px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
+    margin-left: 12px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e0;
+    width: calc(100% - 22px);
+    font-size: 1rem;
 }
 
-.save-button {
-    background-color: #28A745;
-    color: white;
+.edit-form-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.save-button, .cancel-edit-button {
+    background: linear-gradient(90deg, #38a169, #2f855a);
+    color: #ffffff;
     border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
+    padding: 10px 20px;
+    border-radius: 25px;
     cursor: pointer;
-    margin-right: 5px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.save-button:hover {
-    background-color: #218838;
+.save-button:hover, .cancel-edit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.cancel-edit-button {
-    background-color: #6C757D;
-    color: white;
+.cancel-edit-button { background: linear-gradient(90deg, #718096, #4a5568); }
+
+.history-button {
+    display: block;
+    margin: 32px auto;
+    background: linear-gradient(90deg, #4a5568, #2d3748);
+    color: #ffffff;
     border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
+    padding: 14px 28px;
+    border-radius: 30px;
     cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.cancel-edit-button:hover {
-    background-color: #5a6268;
+.history-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.history-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    padding: 20px;
+    margin-top: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.history-room-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+.history-room-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.history-room-card h3 {
+    margin: 0 0 12px;
+    font-size: 1.25rem;
+    color: #2d3748;
+    font-weight: 700;
+}
+
+.history-room-card p {
+    margin: 8px 0;
+    font-size: 1rem;
+    color: #4a5568;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .booked-rooms { padding: 20px; }
+    h2 { font-size: 1.75rem; }
+    .booked-room-card, .history-room-card { padding: 16px; }
+    .room-image { height: 150px; }
+    .button-group { flex-direction: column; gap: 8px; }
+}
+
+@media (max-width: 480px) {
+    .booked-rooms-container, .history-container { grid-template-columns: 1fr; }
+    .button-group button { width: 100%; }
 }

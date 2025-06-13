@@ -35,7 +35,6 @@ function KhuyenMai() {
 
   return (
     <div>
-      <Header />
       <h2>Thông Báo Khuyến Mãi</h2>
 
       {message && <div className="message">{message}</div>}

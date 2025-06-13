@@ -1,11 +1,9 @@
 import React from "react";
-import Header from "./Header.js";
 import "./Support.css";
 
 function Hotro() {
   return (
     <div className="support-container">
-      <Header />
       <h1 className="support-title">Trang Hỗ Trợ</h1>
       <div className="support-content">
         <section className="faq-section">

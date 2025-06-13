@@ -7,21 +7,22 @@ function DangKy() {
     name: '',
     password: '',
     email: '',
-    phone: ''
+    phone: '',
+    role_name: 'customer' 
   });
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate(); 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));                                              
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsLoading(true); 
     setMessage('');
-
 
     if (!formData.name || !formData.password || !formData.email || !formData.phone) {
       setMessage('Vui lòng điền đầy đủ thông tin');
@@ -47,7 +48,7 @@ function DangKy() {
       return;
     }
 
-    try {
+    try {  
       const response = await fetch('http://localhost:3000/api/auth/signup', {
         method: 'POST',
         headers: {
@@ -56,13 +57,13 @@ function DangKy() {
         body: JSON.stringify(formData)
       });
 
-      const data = await response.json();
+      const data = await response.json(); 
       if (!response.ok) {
         throw new Error(data.message || `Lỗi server (${response.status})`);
       }
 
       setMessage('Đăng ký thành công!');
-      setFormData({ name: '', password: '', email: '', phone: '' });
+      setFormData({ name: '', password: '', email: '', phone: '', role_name: 'customer' });
 
       setTimeout(() => navigate('/'), 2000);
     } catch (error) {

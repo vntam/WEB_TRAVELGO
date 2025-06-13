@@ -1,24 +1,26 @@
-import React, { useState, useEffect, useCallback } from "react"; // Thêm useCallback
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import './PaymentPage.css';
 
 const PaymentPage = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const queryParams = new URLSearchParams(location.search);
     const bookingId = queryParams.get('bookingId') || "1257649426";
     const [price, setPrice] = useState(null);
     const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null);
+    const [userBalance, setUserBalance] = useState(null); // Thêm state để lưu số dư
 
     const startTime = new Date();
     const paymentDeadline = new Date(startTime);
     paymentDeadline.setMinutes(paymentDeadline.getMinutes() + 25);
 
-    // Memo hóa calculateTimeLeft bằng useCallback
     const calculateTimeLeft = useCallback(() => {
         const now = new Date();
         const difference = Math.max(0, Math.floor((paymentDeadline - now) / 1000));
         return difference;
-    }, [paymentDeadline]); // Thêm paymentDeadline vào mảng phụ thuộc của useCallback
+    }, [paymentDeadline]);
 
     const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
@@ -27,7 +29,7 @@ const PaymentPage = () => {
             setTimeLeft(calculateTimeLeft());
         }, 1000);
         return () => clearInterval(timer);
-    }, [calculateTimeLeft]); // Thêm calculateTimeLeft vào mảng phụ thuộc
+    }, [calculateTimeLeft]);
 
     useEffect(() => {
         const fetchBookingDetails = async () => {
@@ -51,16 +53,31 @@ const PaymentPage = () => {
                 }
 
                 const data = await response.json();
-                console.log("Dữ liệu API trả về:", data); // Log để kiểm tra
                 const booking = data.find(b => b.booking_id.toString() === bookingId);
                 if (booking) {
                     setPrice(booking.price);
                 } else {
                     setError("Không tìm thấy thông tin đặt phòng.");
                 }
+
+                // Lấy số dư người dùng
+                const balanceResponse = await fetch(`http://localhost:3000/api/bookings`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${user.id}`,
+                    },
+                });
+                const balanceData = await balanceResponse.json();
+                const userBooking = balanceData.find(b => b.signup_id.toString() === user.id);
+                if (userBooking) {
+                    setUserBalance(userBooking.user_balance || 0);
+                } else {
+                    setUserBalance(0); // Đặt mặc định nếu không tìm thấy
+                }
             } catch (err) {
-                console.error("Error fetching booking details:", err);
-                setError("Lỗi tải thông tin đặt phòng.");
+                console.error("Error fetching details:", err);
+                setError("Lỗi tải thông tin.");
             }
         };
 
@@ -77,6 +94,42 @@ const PaymentPage = () => {
         window.history.back();
     };
 
+    const handlePayment = async () => {
+        try {
+            const user = JSON.parse(localStorage.getItem("user"));
+            console.log("Sending price:", price);
+            const response = await fetch(`http://localhost:3000/api/bookings/pay/${bookingId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${user.id}`,
+                },
+                body: JSON.stringify({ price })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                const errorData = JSON.parse(errorText);
+                setError(errorData.error || "Lỗi thanh toán");
+                setTimeout(() => setError(null), 3000);
+                return;
+            }
+
+            const data = await response.json();
+            if (data.message === "Thanh toán thành công") {
+                setSuccessMessage("Thanh toán thành công");
+                setTimeout(() => {
+                    setSuccessMessage(null);
+                    navigate("/bookings");
+                }, 3000);
+            }
+        } catch (err) {
+            console.error("Error processing payment:", err);
+            setError("Lỗi khi thanh toán: " + err.message);
+            setTimeout(() => setError(null), 3000);
+        }
+    };
+
     const formattedDeadline = paymentDeadline.toLocaleString("vi-VN", {
         hour: "2-digit",
         minute: "2-digit",
@@ -85,14 +138,18 @@ const PaymentPage = () => {
         year: "numeric",
     }).replace(/(\d+)\/(\d+)\/(\d+)/, "$2/$1/$3");
 
-    if (error) return <div>{error}</div>;
-    if (price === null) return <div>Đang tải thông tin thanh toán...</div>;
+    // Thêm console.log để debug
+    console.log("Price:", price, "UserBalance:", userBalance);
+    if (price === null || userBalance === null) {
+        console.log("Rendering loading state because price or userBalance is null");
+        return <div>Đang tải thông tin thanh toán...</div>;
+    }
 
     return (
         <div className="payment-container">
             <div className="payment-header">
                 <div className="timer" onClick={handleCancel}>
-                    <span>Chưa có mã QR để thanh toán</span>
+                    <span>Thời gian thanh toán</span>
                     <span className="time-left">{formatTime(timeLeft)}</span>
                     <button className="cancel-button" onClick={handleCancel}>Hủy</button>
                 </div>
@@ -103,6 +160,7 @@ const PaymentPage = () => {
                         <span className="price-label">Số tiền cần thanh toán</span>
                         <p className="price-highlight">{price.toLocaleString()} VNĐ</p>
                     </div>
+                    <p>Số dư hiện tại: {userBalance.toLocaleString()} VNĐ</p>
                 </div>
             </div>
             <h2>Quét mã QR để thanh toán</h2>
@@ -126,6 +184,9 @@ const PaymentPage = () => {
                     </div>
                 </div>
             </div>
+            <button className="confirm-payment-button" onClick={handlePayment}>Thanh toán</button>
+            {successMessage && <div className="notification success">{successMessage}</div>}
+            {error && <div className="notification error">{error}</div>}
             <div className="payment-instructions">
                 <h3>Hướng dẫn thanh toán QR</h3>
                 <ol>

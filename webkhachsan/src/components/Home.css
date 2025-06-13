@@ -28,7 +28,7 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-image: url("../images/searchbar.jpg");
+    background-image: url("../images/css-gradient-background.jpg");
     background-size: cover; 
     background-position: center; 
     background-repeat: no-repeat;
@@ -281,3 +281,4 @@ h1, h2 {
         justify-content: center;
     }
 }
+

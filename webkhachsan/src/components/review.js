@@ -13,8 +13,9 @@ function Review() {
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          setReviews(data);
-          const initialLikes = data.reduce((acc, review) => ({ ...acc, [review.review_id]: 0 }), {});
+          const approvedReviews = data.filter(review => review.status === 1);
+          setReviews(approvedReviews);
+          const initialLikes = approvedReviews.reduce((acc, review) => ({ ...acc, [review.review_id]: 0 }), {});
           setLikes(initialLikes);
         } else {
           setMessage(data.error || "Lỗi tải danh sách đánh giá");
@@ -48,7 +49,6 @@ function Review() {
 
   return (
     <div>
-      <Header />
       <h2>Các Bài Đánh Giá Khách Sạn</h2>
 
       {message && <div className="message">{message}</div>}

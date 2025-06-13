@@ -101,8 +101,7 @@ const Home = () => {
 
     return (
         <div className="home-container">
-            <Header />
-            <h1>Chào mừng đến với hệ thống khách sạn</h1>
+            <h1>Chào mừng đến với TRAVELGO</h1>
             <div className="search-banner">
                 <SearchBar onSearch={handleSearch} />
             </div>

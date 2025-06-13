@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './dangnhap.css';
 
-const DangNhap = () => {
+const DangNhap = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -31,7 +31,10 @@ const DangNhap = () => {
         throw new Error(data.error || 'Đăng nhập thất bại');
       }
 
-      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('user', JSON.stringify(data.user)); // Lưu thông tin người dùng vào localStorage
+      if (onLoginSuccess) {
+        onLoginSuccess(data.user.id); // Truyền userId lên App.js
+      }
       setMessage('Đăng nhập thành công!');
       setTimeout(() => navigate('/'), 2000);
     } catch (err) {

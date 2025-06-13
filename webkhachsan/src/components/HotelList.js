@@ -90,7 +90,7 @@ function HotelList() {
       navigate("/login");
       return;
     }
-    if (window.confirm("Bạn có chắc chắn muốn hủy đặt phòng này không?")) {
+    if (window.confirm("Bạn có chắc chắn muốn đặt phòng này không?")) {
       try {
         const response = await fetch("http://localhost:3000/api/bookings", {
           method: "POST",
@@ -110,8 +110,7 @@ function HotelList() {
           throw new Error(await response.text());
         }
 
-        const result = await response.json();
-        alert(`Đặt phòng thành công!`);
+        alert(`Đặt phòng thành công!` );
         fetchRooms(selectedHotelName);
 
       } catch (err) {
@@ -254,7 +253,6 @@ function HotelList() {
 
   return (
     <div>
-      <Header />
       <h2 className="hotel-title">Danh Sách Khách Sạn</h2>
 
       {showDateForm && (

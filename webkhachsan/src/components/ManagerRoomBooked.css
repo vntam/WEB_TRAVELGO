@@ -1,0 +1,187 @@
+.manager-room-booked {
+    padding: 40px 20px;
+    max-width: 1280px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+}
+
+h2 {
+    text-align: center;
+    color: #1e3a8a;
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 40px;
+    letter-spacing: -0.025em;
+}
+
+h3 {
+    color: #1e3a8a;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-top: 48px;
+    margin-bottom: 24px;
+}
+
+.bookings-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    margin-bottom: 48px;
+}
+
+.bookings-table th,
+.bookings-table td {
+    padding: 16px 20px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 0.95rem;
+    color: #374151;
+}
+
+.bookings-table th {
+    background: #e0f2fe;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #1e3a8a;
+}
+
+.bookings-table tr {
+    transition: background-color 0.3s ease;
+}
+
+.bookings-table tr:hover {
+    background: #f0f9ff;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.approve-button {
+    background: #10b981;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.approve-button:hover {
+    background: #059669;
+    transform: translateY(-2px);
+}
+
+.reject-button {
+    background: #ef4444;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.reject-button:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+}
+
+.loading {
+    text-align: center;
+    font-size: 1.25rem;
+    color: #6b7280;
+    padding: 40px;
+    animation: pulse 1.5s infinite;
+}
+
+.error-message {
+    color: #b91c1c;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 20px;
+    background: #fef2f2;
+    border-radius: 10px;
+    margin: 24px 0;
+    border: 1px solid #fee2e2;
+}
+
+.no-bookings {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #6b7280;
+    padding: 20px;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+    .manager-room-booked {
+        padding: 24px 16px;
+    }
+
+    h2 {
+        font-size: 1.875rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+    }
+
+    .bookings-table th,
+    .bookings-table td {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+    }
+
+    .action-buttons {
+        flex-direction: row;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .bookings-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 6px;
+    }
+}
