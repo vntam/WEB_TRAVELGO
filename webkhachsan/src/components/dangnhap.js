@@ -28,9 +28,16 @@ const DangNhap = ({ onLoginSuccess }) => {
         throw new Error(data.error || 'Đăng nhập thất bại');
       }
 
-      localStorage.setItem('user', JSON.stringify(data.user)); // Lưu thông tin người dùng
+      // Lưu userId trực tiếp vào localStorage
+      const userId = data.user.id;
+      localStorage.setItem('userId', userId);
+      console.log('Logged in userId:', userId); // Debug
+
+      // Lưu toàn bộ user object (tuỳ chọn)
+      localStorage.setItem('user', JSON.stringify(data.user));
+
       if (onLoginSuccess) {
-        onLoginSuccess(data.user.id); // Truyền userId lên App.js
+        onLoginSuccess(userId); // Truyền userId lên App.js
       }
       setMessage('Đăng nhập thành công!');
       setTimeout(() => navigate('/'), 2000);

@@ -5,6 +5,7 @@ const ManagerRoomBooked = () => {
     const [bookings, setBookings] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [successMessage, setSuccessMessage] = useState(null);
 
     useEffect(() => {
         const fetchBookings = async () => {
@@ -16,7 +17,7 @@ const ManagerRoomBooked = () => {
                     return;
                 }
 
-                console.log('Fetching bookings with userId:', user.id);
+                console.log('[BOOKINGS] Fetching bookings with userId:', user.id);
                 const response = await fetch('http://localhost:3000/api/bookings/admin', {
                     headers: {
                         'Content-Type': 'application/json',
@@ -30,18 +31,18 @@ const ManagerRoomBooked = () => {
                 }
 
                 const data = await response.json();
-                console.log('Bookings data received:', data);
+                console.log('[BOOKINGS] Bookings data received:', data);
                 setBookings(data);
                 setLoading(false);
             } catch (err) {
-                console.error('Error fetching bookings:', err);
+                console.error('[BOOKINGS] Error fetching bookings:', err);
                 setError(`Lỗi khi tải danh sách đặt phòng: ${err.message}`);
                 setLoading(false);
             }
         };
 
         fetchBookings();
-    }, []);
+    }, []); // Đảm bảo chỉ chạy một lần khi mount
 
     const formatPrice = (price) => {
         return Math.floor(price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -73,12 +74,14 @@ const ManagerRoomBooked = () => {
                 throw new Error(`Lỗi khi xác nhận đặt phòng: ${response.status} - ${errorText}`);
             }
 
+            const data = await response.json();
             setBookings(bookings.map(booking =>
                 booking.booking_id === bookingId ? { ...booking, status: 1 } : booking
             ));
-            alert('Xác nhận đặt phòng thành công!');
+            setSuccessMessage(data.message);
+            setTimeout(() => setSuccessMessage(null), 3000);
         } catch (err) {
-            console.error('Error approving booking:', err);
+            console.error('[BOOKINGS] Error approving booking:', err);
             setError(`Lỗi khi xác nhận đặt phòng: ${err.message}`);
         }
     };
@@ -100,10 +103,12 @@ const ManagerRoomBooked = () => {
                     throw new Error(`Lỗi khi từ chối đặt phòng: ${response.status} - ${errorText}`);
                 }
 
+                const data = await response.json();
                 setBookings(bookings.filter(booking => booking.booking_id !== bookingId));
-                alert('Từ chối đặt phòng thành công!');
+                setSuccessMessage(data.message);
+                setTimeout(() => setSuccessMessage(null), 3000);
             } catch (err) {
-                console.error('Error rejecting booking:', err);
+                console.error('[BOOKINGS] Error rejecting booking:', err);
                 setError(`Lỗi khi từ chối đặt phòng: ${err.message}`);
             }
         }
@@ -122,6 +127,8 @@ const ManagerRoomBooked = () => {
     return (
         <div className="manager-room-booked">
             <h2>Quản lý Phòng đã đặt</h2>
+
+            {successMessage && <div className="success-message">{successMessage}</div>}
 
             <h3>Danh sách Đặt phòng Chờ xác nhận</h3>
             {pendingBookings.length > 0 ? (

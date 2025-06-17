@@ -2,7 +2,7 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4;
+  background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%);
 }
 
 .hotel-title {
@@ -49,18 +49,17 @@ body {
 
 .submit-date-btn {
   padding: 10px 20px;
-  background-color: #4CAF50;
+  background: linear-gradient(90deg, #6A1B9A, #AB47BC); /* Gradient xanh tím giống "Xem Chi Tiết" */
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background 0.3s;
 }
 
 .submit-date-btn:hover {
-  background-color: #45a049;
+  background: linear-gradient(90deg, #5E1A8A, #9C27B0);
 }
-
 
 .date-info {
   text-align: center;
@@ -70,18 +69,17 @@ body {
 
 .change-date-btn {
   padding: 8px 16px;
-  background-color: #2196F3;
+  background: linear-gradient(90deg, #1E3A8A, #4A90E2); /* Gradient xanh đậm giống "Xem Lịch sử" */
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background 0.3s;
 }
 
 .change-date-btn:hover {
-  background-color: #1976D2;
+  background: linear-gradient(90deg, #163172, #357ABD);
 }
-
 
 .hotel-list {
   display: flex;
@@ -132,7 +130,6 @@ body {
   font-size: 0.9rem;
 }
 
-
 .rooms-list {
   display: flex;
   flex-wrap: wrap;
@@ -159,9 +156,8 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-
 .room-card.booked {
-  background-color: #ffcccc; 
+  background-color: #ffcccc;
   position: relative;
   overflow: hidden;
 }
@@ -181,13 +177,12 @@ body {
 }
 
 .room-card.booked .book-button {
-  background-color: #cccccc !important;
+  background: linear-gradient(90deg, #cccccc, #b0b0b0) !important;
   cursor: not-allowed !important;
 }
 
-
 .room-card .book-button:disabled {
-  background-color: #e0e0e0; 
+  background: linear-gradient(90deg, #e0e0e0, #c0c0c0);
   cursor: not-allowed;
   opacity: 0.7;
 }
@@ -227,49 +222,49 @@ body {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background 0.3s;
   font-size: 0.9rem;
 }
 
 .book-button {
-  background-color: #007bff;
+  background: linear-gradient(90deg, #007bff, #0056b3); /* Gradient xanh dương */
   color: white;
 }
 
 .book-button:hover {
-  background-color: #0056b3;
+  background: linear-gradient(90deg, #0056b3, #003d99);
 }
 
 .book-button:disabled {
-  background-color: #e0e0e0; 
+  background: linear-gradient(90deg, #e0e0e0, #c0c0c0);
   cursor: not-allowed;
 }
 
 .review-button {
-  background-color: #FF9800;
+  background: linear-gradient(90deg, #FF9800, #F57C00); /* Gradient cam */
   color: white;
 }
 
 .review-button:hover {
-  background-color: #F57C00;
+  background: linear-gradient(90deg, #F57C00, #EF6C00);
 }
 
 .submit-review-btn {
-  background-color: #4CAF50;
+  background: linear-gradient(90deg, #2E7D32, #66BB6A); /* Gradient xanh lá giống "Chỉnh Sửa" */
   color: white;
 }
 
 .submit-review-btn:hover {
-  background-color: #45a049;
+  background: linear-gradient(90deg, #2E7D32, #43A047);
 }
 
 .cancel-review-btn {
-  background-color: #f44336;
+  background: linear-gradient(90deg, #D32F2F, #EF5350); /* Gradient đỏ giống "Hủy" */
   color: white;
 }
 
 .cancel-review-btn:hover {
-  background-color: #d32f2f;
+  background: linear-gradient(90deg, #D32F2F, #E57373);
 }
 
 .room-review-image {
@@ -300,13 +295,31 @@ body {
   margin-top: 5px;
 }
 
-
 .loading {
   text-align: center;
   color: #333;
   margin: 20px 0;
 }
 
+.no-rooms {
+  text-align: center;
+  color: #777;
+  margin: 20px 0;
+}
+
+.room-info {
+  margin-bottom: 10px;
+}
+
+.room-number,
+.room-type,
+.room-price {
+  margin: 5px 0;
+}
+
+.availability h4 {
+  margin-top: 10px;
+}
 
 @media (max-width: 768px) {
   .hotel-card,
@@ -336,7 +349,6 @@ body {
     width: 100%;
   }
 }
-
 
 .partners-section {
   margin: 40px auto;

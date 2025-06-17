@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header'; 
+import Header from './components/Header';
 import Home from './components/Home.js';
 import HotelList from './components/HotelList.js';
 import KhuyenMai from './components/khuyenmai.js';
@@ -14,9 +14,11 @@ import ManageUsers from './components/ManageUsers.js';
 import ManageInvoices from './components/ManageInvoices.js';
 import ManageReviews from './components/ManageReviews.js';
 import ManagerRoomBooked from './components/ManagerRoomBooked.js';
-import Deposit from './components/Deposit'; // Thêm component Deposit
-import ManageDeposits from './components/ManageDeposits'; // Thêm component ManageDeposits
-import TransactionHistory from './components/TransactionHistory'; // Thêm import này
+import Deposit from './components/Deposit';
+import ManageDeposits from './components/ManageDeposits';
+import TransactionHistory from './components/TransactionHistory';
+import AdminTransactionHistory from './components/AdminTransactionHistory';
+import ProfileEdit from './components/ProfileEdit.js';
 
 function App() {
     const [userId, setUserId] = useState(null);
@@ -29,24 +31,25 @@ function App() {
     }, []);
 
     const handleLoginSuccess = (id) => {
+        console.log('Login success with userId:', id); // Thêm log để debug
         setUserId(id);
-        localStorage.setItem('userId', id); 
+        localStorage.setItem('userId', id);
     };
 
     const handleLogout = () => {
+        console.log('Logging out'); // Thêm log để debug
         setUserId(null);
         localStorage.removeItem('userId');
-        localStorage.removeItem('user'); 
+        localStorage.removeItem('user');
     };
 
     const handlePaymentSuccess = (bookingId) => {
-        // Logic để cập nhật thông báo trong Header (truyền qua props)
-        // Không cần xử lý trực tiếp ở đây, chỉ truyền xuống Header
+        console.log('Payment success for bookingId:', bookingId); // Thêm log để debug
     };
 
     return (
         <Router>
-            <Header userId={userId} onLogout={handleLogout} onPaymentSuccess={handlePaymentSuccess} />
+            <Header userId={userId || localStorage.getItem('userId')} onLogout={handleLogout} onPaymentSuccess={handlePaymentSuccess} />
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/hotels" element={<HotelList />} />
@@ -61,9 +64,11 @@ function App() {
                 <Route path="/manage-invoices" element={<ManageInvoices />} />
                 <Route path="/manage-reviews" element={<ManageReviews />} />
                 <Route path="/manage-roombooked" element={<ManagerRoomBooked />} />
-                <Route path="/deposit" element={<Deposit userId={userId} />} /> {/* Thêm route cho nạp tiền */}
-                <Route path="/manage-deposits" element={<ManageDeposits userId={userId} />} /> {/* Thêm route cho quản lý nạp tiền */}
+                <Route path="/deposit" element={<Deposit userId={userId} />} />
+                <Route path="/manage-deposits" element={<ManageDeposits userId={userId} />} />
                 <Route path="/transaction-history/:userId" element={<TransactionHistory />} />
+                <Route path="/admin-transaction-history" element={<AdminTransactionHistory />} />
+                <Route path="/profile-edit/:userId" element={<ProfileEdit />} />
             </Routes>
         </Router>
     );

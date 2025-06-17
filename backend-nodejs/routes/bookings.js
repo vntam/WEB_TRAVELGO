@@ -4,7 +4,6 @@ const { getConnection } = require("../config/db");
 
 process.env.TZ = 'Asia/Ho_Chi_Minh';
 
-
 // Lấy danh sách đặt phòng
 router.get("/", async (req, res) => {
     let connection;
@@ -53,6 +52,56 @@ router.get("/", async (req, res) => {
         }
     }
 });
+
+// Trong bookings.js
+router.get("/admin", async (req, res) => {
+    let connection;
+    try {
+        const adminId = req.headers.authorization?.split(" ")[1];
+        if (!adminId) {
+            return res.status(401).json({ error: "Vui lòng đăng nhập với vai trò admin" });
+        }
+
+        connection = await getConnection();
+        const checkAdminQuery = `
+            SELECT signup_id
+            FROM role
+            WHERE signup_id = ? AND role_name = 'admin'
+        `;
+        const [admin] = await connection.execute(checkAdminQuery, [adminId]);
+        if (admin.length === 0) {
+            return res.status(403).json({ error: "Bạn không có quyền admin" });
+        }
+
+        const query = `
+            SELECT b.*, s.name AS user_name, r.room_number, r.room_type, h.name AS hotel_name
+            FROM booking b
+            JOIN signup s ON b.signup_id = s.signup_id
+            JOIN rooms r ON b.room_id = r.room_id
+            JOIN hotels h ON r.hotel_id = h.hotel_id
+            WHERE b.status = 0
+            ORDER BY b.check_in DESC
+        `;
+        console.log("[BOOKINGS] Fetching all pending bookings for admin:", adminId);
+        const [rows] = await connection.execute(query);
+        console.log("[BOOKINGS] Fetched", rows.length, "pending bookings");
+
+        res.json(rows);
+    } catch (error) {
+        console.error("[BOOKINGS] Error fetching bookings for admin:", {
+            message: error.message,
+            stack: error.stack,
+            userId: req.headers.authorization?.split(" ")[1],
+        });
+        res.status(500).json({ error: "Internal server error", details: error.message });
+    } finally {
+        if (connection) {
+            await connection.release();
+            console.log("[BOOKINGS] Database connection released for GET /admin");
+        }
+    }
+});
+
 // Tạo đặt phòng mới
 router.post("/", async (req, res) => {
     let connection;
@@ -213,59 +262,54 @@ router.put("/:bookingId", async (req, res) => {
 });
 
 // Lấy danh sách đặt phòng cho admin
-router.get("/admin", async (req, res) => {
-    console.log("Processing GET /api/bookings/admin request");
+router.get("/:bookingId", async (req, res) => {
     let connection;
     try {
-        const adminId = req.headers.authorization?.split(" ")[1];
-        console.log("Admin ID from header:", adminId);
+        const { bookingId } = req.params;
+        const userId = req.headers.authorization?.split(" ")[1];
+        console.log("[BOOKINGS] Attempting to fetch booking with bookingId:", bookingId, "for userId:", userId);
 
-        if (!adminId) {
-            console.log("No adminId provided");
-            return res.status(401).json({ error: "Vui lòng đăng nhập với vai trò admin" });
+        if (!userId) {
+            console.log("[BOOKINGS] No userId provided in Authorization header");
+            return res.status(401).json({ error: "Vui lòng đăng nhập" });
         }
 
         connection = await getConnection();
-        console.log("Database connection established");
 
-        const checkAdminQuery = `
-            SELECT signup_id
-            FROM role
-            WHERE signup_id = ? AND role_name = 'admin'
+        // Đơn giản hóa query, chỉ lấy dữ liệu cơ bản từ booking
+        const query = `
+            SELECT b.*, s.balance AS user_balance
+            FROM booking b
+            LEFT JOIN signup s ON b.signup_id = s.signup_id
+            WHERE b.booking_id = ? AND b.signup_id = ?
         `;
-        console.log("Checking admin role for signup_id:", adminId);
-        const [admin] = await connection.execute(checkAdminQuery, [adminId]);
-        console.log("Admin role check result:", admin);
+        console.log("[BOOKINGS] Executing query:", query, "with params:", [bookingId, userId]);
+        const [rows] = await connection.execute(query, [bookingId, userId]);
+        console.log("[BOOKINGS] Query executed, rows fetched:", rows.length, "records:", rows);
 
-        if (admin.length === 0) {
-            console.log(`User ${adminId} does not have admin role`);
-            return res.status(403).json({ error: "Bạn không có quyền admin" });
+        if (rows.length === 0) {
+            console.log("[BOOKINGS] No booking found for bookingId", bookingId, "and userId", userId);
+            return res.status(404).json({ error: "Booking không tồn tại" });
         }
 
-        const query = `
-            SELECT b.*, r.room_number, r.room_type, r.price, r.room_id, h.name AS hotel_name, s.name AS user_name
-            FROM booking b
-            JOIN rooms r ON b.room_id = r.room_id
-            JOIN hotels h ON r.hotel_id = h.hotel_id
-            JOIN signup s ON b.signup_id = s.signup_id
-            ORDER BY b.check_in DESC
-        `;
-        console.log("Executing query to fetch bookings");
-        const [rows] = await connection.execute(query);
-        console.log("Bookings fetched:", rows.length, "records");
-        res.json(rows);
+        // Nếu cần thêm room và hotel, kiểm tra CSDL trước
+        res.json(rows[0]);
     } catch (error) {
-        console.error("Error in /admin endpoint:", error);
+        console.error("[BOOKINGS] Error fetching booking:", {
+            message: error.message,
+            stack: error.stack,
+            bookingId: req.params.bookingId,
+            userId: req.headers.authorization?.split(" ")[1],
+            query: query
+        });
         res.status(500).json({ error: "Internal server error", details: error.message });
     } finally {
         if (connection) {
             await connection.release();
-            console.log("Database connection released");
+            console.log("[BOOKINGS] Database connection released for GET /:bookingId endpoint");
         }
     }
 });
-
-
 // Lấy chi tiết đặt phòng theo bookingId
 router.get("/:bookingId", async (req, res) => {
     let connection;
@@ -314,102 +358,130 @@ router.get("/:bookingId", async (req, res) => {
     }
 });
 
-// Thanh toán hóa đơn
+// Trong routes/bookings.js
 router.post("/pay/:bookingId", async (req, res) => {
     let connection;
     try {
         const { bookingId } = req.params;
-        const { price } = req.body;
+        const { price: amount } = req.body;
         const userId = req.headers.authorization?.split(" ")[1];
 
+        console.log(`[PAYMENT] Processing payment for bookingId: ${bookingId}, userId: ${userId}, amount: ${amount}`);
+
         if (!userId) {
+            console.log("[PAYMENT] No userId provided in Authorization header");
             return res.status(401).json({ error: "Vui lòng đăng nhập" });
         }
 
-        if (!price) {
-            return res.status(400).json({ error: "Vui lòng cung cấp giá tiền" });
+        if (!amount || amount <= 0) {
+            console.log("[PAYMENT] Invalid amount provided:", amount);
+            return res.status(400).json({ error: "Vui lòng cung cấp số tiền hợp lệ" });
         }
 
         connection = await getConnection();
         await connection.beginTransaction();
 
-        // Kiểm tra booking và thông tin người dùng
+        // Kiểm tra booking
         const bookingQuery = `
             SELECT b.*, s.balance AS user_balance
             FROM booking b
             JOIN signup s ON b.signup_id = s.signup_id
-            WHERE b.booking_id = ? AND b.signup_id = ?
+            WHERE b.booking_id = ? AND b.signup_id = ? AND b.status = 1
         `;
+        console.log("[PAYMENT] Checking booking: bookingId=", bookingId, "userId=", userId);
         const [booking] = await connection.execute(bookingQuery, [bookingId, userId]);
 
         if (booking.length === 0) {
-            return res.status(404).json({ error: "Không tìm thấy booking hoặc bạn không có quyền" });
+            console.log("[PAYMENT] Booking not found or not in pending status: bookingId=", bookingId, "userId=", userId);
+            return res.status(400).json({ 
+                error: "Booking không tồn tại, đã được thanh toán, hoặc đã hủy" 
+            });
         }
 
         const userBalance = parseFloat(booking[0].user_balance);
-        if (userBalance < price) {
-            return res.status(400).json({ error: "Số dư không đủ để thanh toán" });
+        const bookingPrice = parseFloat(booking[0].total_price);
+        if (userBalance < amount || Math.abs(amount - bookingPrice) > 0.01) { // Cho phép sai số nhỏ
+            console.log("[PAYMENT] Invalid payment: userBalance=", userBalance, "amount=", amount, "bookingPrice=", bookingPrice);
+            return res.status(400).json({ 
+                error: "Số dư không đủ hoặc số tiền thanh toán không khớp",
+                details: { userBalance, amount, bookingPrice }
+            });
         }
 
         // Trừ tiền người dùng
         const updateUserBalanceQuery = `
             UPDATE signup
             SET balance = balance - ?
-            WHERE signup_id = ?
+            WHERE signup_id = ? AND balance >= ?
         `;
-        await connection.execute(updateUserBalanceQuery, [price, userId]);
+        console.log("[PAYMENT] Updating user balance: userId=", userId, "amount=", amount);
+        const [balanceUpdate] = await connection.execute(updateUserBalanceQuery, [amount, userId, amount]);
+        if (balanceUpdate.affectedRows === 0) {
+            throw new Error("Số dư không đủ để thực hiện giao dịch");
+        }
 
         // Cộng tiền cho admin
         const findAdminQuery = `
-            SELECT signup_id
-            FROM role
-            WHERE role_name = 'admin'
-            LIMIT 1
+            SELECT signup_id FROM role
+            WHERE role_name = 'admin' LIMIT 1
         `;
+        console.log("[PAYMENT] Finding admin account");
         const [admin] = await connection.execute(findAdminQuery);
-
-        if (admin.length === 0) {
-            throw new Error("Không tìm thấy admin để cập nhật số dư");
+        if (!admin[0]) {
+            console.log("[PAYMENT] No admin found");
+            throw new Error("Không tìm thấy tài khoản admin");
         }
-
         const adminId = admin[0].signup_id;
+
         const updateAdminBalanceQuery = `
             UPDATE signup
             SET balance = balance + ?
             WHERE signup_id = ?
         `;
-        const [adminResult] = await connection.execute(updateAdminBalanceQuery, [price, adminId]);
+        console.log("[PAYMENT] Updating admin balance: adminId=", adminId, "amount=", amount);
+        await connection.execute(updateAdminBalanceQuery, [amount, adminId]);
 
-        if (adminResult.affectedRows === 0) {
-            throw new Error("Không thể cập nhật số dư cho admin");
-        }
-
-        // Lưu hóa đơn vào bảng invoices
+        // Tạo hóa đơn
         const insertInvoiceQuery = `
             INSERT INTO invoices (booking_id, user_id, amount, payment_date, status)
-            VALUES (?, ?, ?, NOW(), 'pending')
+            VALUES (?, ?, ?, NOW(), 'completed')
         `;
-        await connection.execute(insertInvoiceQuery, [bookingId, userId, price]);
+        console.log("[PAYMENT] Creating invoice: bookingId=", bookingId, "userId=", userId);
+        const [invoiceResult] = await connection.execute(insertInvoiceQuery, [bookingId, userId, amount]);
 
-        // Cập nhật trạng thái booking
+        // Cập nhật trạng thái booking thành 2 (đã thanh toán)
         const updateBookingStatusQuery = `
             UPDATE booking
-            SET status = 1
+            SET status = 2
             WHERE booking_id = ?
         `;
+        console.log("[PAYMENT] Updating booking status to 2: bookingId=", bookingId);
         await connection.execute(updateBookingStatusQuery, [bookingId]);
 
         await connection.commit();
-        res.json({ message: "Thanh toán thành công, chờ admin xác nhận" });
+        console.log("[PAYMENT] Payment processed successfully: bookingId=", bookingId, "invoiceId=", invoiceResult.insertId);
+        res.json({ 
+            message: "Thanh toán thành công",
+            bookingId,
+            invoiceId: invoiceResult.insertId
+        });
     } catch (error) {
         if (connection) await connection.rollback();
-        console.error("Error processing payment:", error);
-        res.status(500).json({ error: "Internal server error", details: error.message });
+        console.error("[PAYMENT] Error processing payment:", {
+            message: error.message,
+            stack: error.stack,
+            bookingId: req.params.bookingId,
+            userId: req.headers.authorization?.split(" ")[1],
+            body: req.body
+        });
+        res.status(500).json({ error: "Lỗi server nội bộ", details: error.message });
     } finally {
-        if (connection) await connection.release();
+        if (connection) {
+            await connection.release();
+            console.log("[PAYMENT] Database connection released for POST /pay/:bookingId");
+        }
     }
 });
-
 // Xác nhận hóa đơn
 router.put("/invoices/:invoiceId/approve", async (req, res) => {
     let connection;
@@ -418,10 +490,12 @@ router.put("/invoices/:invoiceId/approve", async (req, res) => {
         const adminId = req.headers.authorization?.split(" ")[1];
 
         if (!adminId) {
+            console.log("No adminId provided in Authorization header");
             return res.status(401).json({ error: "Vui lòng đăng nhập với vai trò admin" });
         }
 
         connection = await getConnection();
+        await connection.beginTransaction();
 
         // Kiểm tra vai trò admin
         const checkAdminQuery = `
@@ -432,35 +506,54 @@ router.put("/invoices/:invoiceId/approve", async (req, res) => {
         const [admin] = await connection.execute(checkAdminQuery, [adminId]);
 
         if (admin.length === 0) {
+            console.log(`User ${adminId} does not have admin role`);
             return res.status(403).json({ error: "Bạn không có quyền admin" });
         }
 
-        // Cập nhật trạng thái hóa đơn
-        const updateInvoiceQuery = `
-            UPDATE invoices
-            SET status = 'completed'
+        // Kiểm tra hóa đơn có tồn tại và ở trạng thái pending
+        const checkInvoiceQuery = `
+            SELECT booking_id
+            FROM invoices
             WHERE invoice_id = ? AND status = 'pending'
         `;
-        const [result] = await connection.execute(updateInvoiceQuery, [invoiceId]);
+        const [invoice] = await connection.execute(checkInvoiceQuery, [invoiceId]);
 
-        if (result.affectedRows === 0) {
+        if (invoice.length === 0) {
+            console.log(`Invoice ${invoiceId} not found or not in pending state`);
             return res.status(404).json({ error: "Không tìm thấy hóa đơn hoặc hóa đơn không ở trạng thái chờ duyệt" });
         }
 
-        // Cập nhật trạng thái booking
+        // Cập nhật trạng thái hóa đơn thành completed
+        const updateInvoiceQuery = `
+            UPDATE invoices
+            SET status = 'completed'
+            WHERE invoice_id = ?
+        `;
+        await connection.execute(updateInvoiceQuery, [invoiceId]);
+
+        // Cập nhật trạng thái booking thành 2 (đã duyệt phòng)
         const updateBookingQuery = `
             UPDATE booking
             SET status = 2
-            WHERE booking_id = (SELECT booking_id FROM invoices WHERE invoice_id = ?)
+            WHERE booking_id = ?
         `;
-        await connection.execute(updateBookingQuery, [invoiceId]);
+        await connection.execute(updateBookingQuery, [invoice[0].booking_id]);
 
+        await connection.commit();
+
+        console.log(`Invoice ${invoiceId} approved successfully`);
         res.json({ message: "Xác nhận hóa đơn thành công" });
     } catch (error) {
-        console.error("Error approving invoice:", error);
+        if (connection) await connection.rollback();
+        console.error("Error approving invoice:", {
+            message: error.message,
+            stack: error.stack,
+            invoiceId: req.params.invoiceId
+        });
         res.status(500).json({ error: "Internal server error", details: error.message });
     } finally {
         if (connection) await connection.release();
+        console.log("Database connection released for PUT /invoices/:invoiceId/approve endpoint");
     }
 });
 
@@ -472,10 +565,12 @@ router.put("/invoices/:invoiceId/reject", async (req, res) => {
         const adminId = req.headers.authorization?.split(" ")[1];
 
         if (!adminId) {
+            console.log("No adminId provided in Authorization header");
             return res.status(401).json({ error: "Vui lòng đăng nhập với vai trò admin" });
         }
 
         connection = await getConnection();
+        await connection.beginTransaction();
 
         // Kiểm tra vai trò admin
         const checkAdminQuery = `
@@ -486,6 +581,7 @@ router.put("/invoices/:invoiceId/reject", async (req, res) => {
         const [admin] = await connection.execute(checkAdminQuery, [adminId]);
 
         if (admin.length === 0) {
+            console.log(`User ${adminId} does not have admin role`);
             return res.status(403).json({ error: "Bạn không có quyền admin" });
         }
 
@@ -498,12 +594,11 @@ router.put("/invoices/:invoiceId/reject", async (req, res) => {
         const [invoice] = await connection.execute(invoiceQuery, [invoiceId]);
 
         if (invoice.length === 0) {
+            console.log(`Invoice ${invoiceId} not found or not in pending state`);
             return res.status(404).json({ error: "Không tìm thấy hóa đơn hoặc hóa đơn không ở trạng thái chờ duyệt" });
         }
 
         const { booking_id, user_id, amount } = invoice[0];
-
-        await connection.beginTransaction();
 
         // Hoàn tiền cho người dùng
         const refundUserQuery = `
@@ -521,6 +616,10 @@ router.put("/invoices/:invoiceId/reject", async (req, res) => {
             LIMIT 1
         `;
         const [adminData] = await connection.execute(findAdminQuery);
+        if (!adminData[0]) {
+            console.log("No admin found");
+            return res.status(500).json({ error: "Không tìm thấy admin" });
+        }
         const adminIdToUpdate = adminData[0].signup_id;
 
         const refundAdminQuery = `
@@ -530,7 +629,7 @@ router.put("/invoices/:invoiceId/reject", async (req, res) => {
         `;
         await connection.execute(refundAdminQuery, [amount, adminIdToUpdate]);
 
-        // Cập nhật trạng thái hóa đơn
+        // Cập nhật trạng thái hóa đơn thành rejected
         const updateInvoiceQuery = `
             UPDATE invoices
             SET status = 'rejected'
@@ -538,22 +637,29 @@ router.put("/invoices/:invoiceId/reject", async (req, res) => {
         `;
         await connection.execute(updateInvoiceQuery, [invoiceId]);
 
-        // Cập nhật trạng thái booking về chờ xác nhận
+        // Cập nhật trạng thái booking thành -1 (không được xác nhận)
         const updateBookingQuery = `
             UPDATE booking
-            SET status = 0
+            SET status = -1
             WHERE booking_id = ?
         `;
         await connection.execute(updateBookingQuery, [booking_id]);
 
         await connection.commit();
+
+        console.log(`Invoice ${invoiceId} rejected successfully`);
         res.json({ message: "Từ chối hóa đơn thành công" });
     } catch (error) {
         if (connection) await connection.rollback();
-        console.error("Error rejecting invoice:", error);
+        console.error("Error rejecting invoice:", {
+            message: error.message,
+            stack: error.stack,
+            invoiceId: req.params.invoiceId
+        });
         res.status(500).json({ error: "Internal server error", details: error.message });
     } finally {
         if (connection) await connection.release();
+        console.log("Database connection released for PUT /invoices/:invoiceId/reject endpoint");
     }
 });
 
@@ -606,7 +712,6 @@ router.get("/:userId/balance", async (req, res) => {
         }
     }
 });
-
 
 // Endpoint để admin thêm tiền vào số dư khách hàng
 router.post("/admin/add-balance", async (req, res) => {
@@ -663,8 +768,6 @@ router.post("/admin/add-balance", async (req, res) => {
         if (connection) await connection.release();
     }
 });
-
-
 
 // Xác nhận đặt phòng
 router.put("/:bookingId/approve", async (req, res) => {
@@ -861,6 +964,79 @@ router.get("/transaction-history/:userId", async (req, res) => {
         if (connection) {
             await connection.release();
             console.log("Database connection released for GET /transaction-history/:userId endpoint");
+        }
+    }
+});
+
+// Lấy lịch sử giao dịch cho admin
+router.get("/admin/transaction-history", async (req, res) => {
+    let connection;
+    try {
+        const authUserId = req.headers.authorization?.split(" ")[1];
+        if (!authUserId) {
+            return res.status(401).json({ error: "Vui lòng đăng nhập" });
+        }
+
+        connection = await getConnection();
+        console.log(`Fetching admin transaction history for userId: ${authUserId}`);
+
+        // Truy vấn kết hợp các hoạt động từ các bảng hiện có
+        const query = `
+            SELECT 
+                'booking_payment' AS transaction_type,
+                b.booking_date AS transaction_date,
+                b.total_price AS amount,
+                CONCAT('Đặt phòng bởi ', u.name, ' tại phòng ', r.room_number, ' - ', h.name) AS description
+            FROM booking b
+            JOIN signup u ON b.signup_id = u.signup_id
+            JOIN rooms r ON b.room_id = r.room_id
+            JOIN hotels h ON r.hotel_id = h.hotel_id
+            WHERE b.status IN (0, 1, 2)
+            UNION
+            SELECT 
+                'invoice_management' AS transaction_type,
+                i.payment_date AS transaction_date,
+                i.amount AS amount,
+                CONCAT('Hóa đơn ', i.invoice_id, ' của ', u.name, ' - Trạng thái: ', i.status) AS description
+            FROM invoices i
+            JOIN signup u ON i.user_id = u.signup_id
+            UNION
+            SELECT 
+                'review_management' AS transaction_type,
+                r.review_date AS transaction_date,
+                0 AS amount,
+                CONCAT('Đánh giá ', r.review_id, ' bởi ', u.name, ' - Trạng thái: ', 
+                    CASE WHEN r.status = 0 THEN 'Chưa duyệt' ELSE 'Đã duyệt' END) AS description
+            FROM review r
+            JOIN signup u ON r.signup_id = u.signup_id
+            UNION
+            SELECT 
+                'deposit_management' AS transaction_type,
+                d.created_at AS transaction_date,
+                d.amount AS amount,
+                CONCAT('Nạp tiền ', d.id, ' bởi ', u.name, ' - Trạng thái: ', d.status) AS description
+            FROM deposits d
+            JOIN signup u ON d.user_id = u.signup_id
+            WHERE d.status IN ('approved', 'rejected')
+            ORDER BY transaction_date DESC
+        `;
+        const [rows] = await connection.execute(query, []);
+
+        res.json({
+            transactions: rows,
+            message: "Lịch sử giao dịch của admin đã được lấy thành công"
+        });
+    } catch (error) {
+        console.error("Error fetching admin transaction history:", {
+            message: error.message,
+            stack: error.stack,
+            requestHeaders: req.headers,
+        });
+        res.status(500).json({ error: "Internal server error", details: error.message });
+    } finally {
+        if (connection) {
+            await connection.release();
+            console.log("Database connection released for GET /admin/transaction-history endpoint");
         }
     }
 });

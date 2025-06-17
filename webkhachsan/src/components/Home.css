@@ -1,11 +1,11 @@
 .home-container {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background: linear-gradient(135deg, #f4f4f4, #e0e0e0);
     padding: 20px;
 }
 
 .home-banner {
-    background-color: #4CAF50;
+    background: linear-gradient(135deg, #4CAF50, #388E3C);
     color: white;
     text-align: center;
     padding: 50px;
@@ -28,7 +28,7 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-image: url("../images/css-gradient-background.jpg");
+    background-image: url("../images/background.jpg");
     background-size: cover; 
     background-position: center; 
     background-repeat: no-repeat;
@@ -56,7 +56,7 @@
 
 .search-bar button {
     padding: 10px 20px;
-    background-color: #4CAF50;
+    background: linear-gradient(90deg, #4CAF50, #388E3C); /* Gradient xanh lá */
     color: white;
     border: none;
     border-radius: 5px;
@@ -64,14 +64,14 @@
 }
 
 .search-bar button:hover {
-    background-color: #45a049;
+    background: linear-gradient(90deg, #45a049, #2E7D32);
 }
 
 .promotion-container {
     margin-bottom: 30px;
     padding: 20px;
     max-width: 1500px;
-    margin : auto;
+    margin: auto;
 }
 
 .promotion-item.banner {
@@ -79,7 +79,7 @@
     padding: 20px;
     margin: 0 auto;
     max-width: 100%;
-    background-color: #fff;
+    background: linear-gradient(135deg, #ffffff, #f0f0f0);
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     min-height: 400px;
@@ -113,7 +113,7 @@
 }
 
 .promotion-item {
-    background-color: #fff;
+    background: linear-gradient(135deg, #ffffff, #f0f0f0);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -170,7 +170,7 @@ h1, h2 {
     margin: 30px auto;
     border: 1px solid #ccc;
     border-radius: 10px;
-    background-color: #fff;
+    background: linear-gradient(135deg, #ffffff, #f0f0f0);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -203,7 +203,7 @@ h1, h2 {
 }
 
 .home-footer {
-    background-color: #333; 
+    background: linear-gradient(135deg, #333333, #1a1a1a);
     color: white;
     padding: 40px 20px;
     text-align: left;
@@ -246,17 +246,30 @@ h1, h2 {
 .payment-partners-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 20px; /* Tăng khoảng cách giữa các box */
+    justify-content: center;
 }
 
 .payment-partner-card {
-    width: 60px;
-    height: 40px;
+    width: 100px; /* Tăng kích thước box */
+    height: 70px; /* Tăng chiều cao box */
+    background: #ffffff; /* Nền trắng để nổi bật logo */
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Thêm shadow nhẹ */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s;
+}
+
+.payment-partner-card:hover {
+    transform: scale(1.05); /* Hiệu ứng zoom khi hover */
 }
 
 .payment-logo {
-    width: 100%;
-    height: 100%;
+    width: 80%; /* Tăng kích thước logo */
+    height: 80%;
     object-fit: contain;
 }
 
@@ -280,5 +293,16 @@ h1, h2 {
     .payment-partners-grid {
         justify-content: center;
     }
+
+    .payment-partner-card {
+        width: 90px; /* Giảm một chút trên màn hình nhỏ */
+        height: 60px;
+    }
 }
 
+@media (max-width: 480px) {
+    .payment-partner-card {
+        width: 80px; /* Giảm thêm trên màn hình rất nhỏ */
+        height: 50px;
+    }
+}

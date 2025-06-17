@@ -1,155 +1,31 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import './PaymentPage.css';
 
-const PaymentPage = ({ onPaymentSuccess }) => { // Thêm onPaymentSuccess vào props
-    const location = useLocation();
-    const navigate = useNavigate();
-    const queryParams = new URLSearchParams(location.search);
-    const bookingId = queryParams.get('bookingId') || "1257649426";
-    const [price, setPrice] = useState(null);
-    const [error, setError] = useState(null);
-    const [successMessage, setSuccessMessage] = useState(null);
-    const [userBalance, setUserBalance] = useState(null);
-    const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
-    const [isPaymentDone, setIsPaymentDone] = useState(false);
-
-    // Thêm state cho danh sách thông báo
-    const [notifications, setNotifications] = useState([
-        { room: "HCM - Phòng 101", price: 400000 },
-        { room: "HCM - Phòng 103", price: 800000 },
-        { room: "HCM - Phòng 101", price: 400000 },
-        { room: "HCM - Phòng 101", price: 400000 },
-    ]);
-
-    // Tính tổng tiền
-    const totalAmount = notifications.reduce((sum, item) => sum + item.price, 0);
-
-    const startTime = new Date();
-    const paymentDeadline = new Date(startTime);
-    paymentDeadline.setMinutes(paymentDeadline.getMinutes() + 25);
-
-    const calculateTimeLeft = useCallback(() => {
-        const now = new Date();
-        const difference = Math.max(0, Math.floor((paymentDeadline - now) / 1000));
+const Timer = ({ isPaymentDone, onCancel }) => {
+    const paymentDeadline = useMemo(() => new Date(Date.now() + 25 * 60 * 1000), []);
+    const [timeLeft, setTimeLeft] = useState(() => {
+        const difference = Math.max(0, Math.floor((paymentDeadline - Date.now()) / 1000));
         return difference;
-    }, [paymentDeadline]);
-
-    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+    });
 
     useEffect(() => {
-        const timer = setInterval(() => {
-            setTimeLeft(calculateTimeLeft());
-        }, 1000);
-        return () => clearInterval(timer);
-    }, [calculateTimeLeft]);
-
-    useEffect(() => {
-        const fetchBookingDetails = async () => {
-            try {
-                const user = JSON.parse(localStorage.getItem("user"));
-                if (!user || !user.id) {
-                    setError("Vui lòng đăng nhập để xem thông tin thanh toán. Không tìm thấy userId.");
-                    return;
-                }
-
-                // Lấy số dư từ localStorage thay vì gọi API
-                const balance = parseFloat(user.balance) || 0;
-                setUserBalance(balance);
-
-                const response = await fetch(`http://localhost:3000/api/bookings/${bookingId}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${user.id}`,
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Lỗi khi lấy thông tin booking: ${response.status} - ${await response.text()}`);
-                }
-
-                const data = await response.json();
-                if (data && data.price) {
-                    setPrice(data.price);
-                } else {
-                    setError("Không tìm thấy thông tin đặt phòng cho booking ID: " + bookingId);
-                }
-            } catch (err) {
-                console.error("Error fetching details:", err);
-                setError("Lỗi tải thông tin: " + err.message);
-            }
+        let timer = null;
+        if (!isPaymentDone) {
+            timer = setInterval(() => {
+                const difference = Math.max(0, Math.floor((paymentDeadline - Date.now()) / 1000));
+                setTimeLeft(difference);
+            }, 1000);
+        }
+        return () => {
+            if (timer) clearInterval(timer);
         };
-
-        fetchBookingDetails();
-    }, [bookingId]);
+    }, [paymentDeadline, isPaymentDone]);
 
     const formatTime = (seconds) => {
         const minutes = Math.floor(seconds / 60);
         const secs = seconds % 60;
         return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
-    };
-
-    const handleCancel = () => {
-        window.history.back();
-    };
-
-    const handlePayment = async () => {
-        try {
-            if (isPaymentDone) {
-                setError("Phòng này đã được thanh toán.");
-                setTimeout(() => setError(null), 3000);
-                return;
-            }
-
-            if (userBalance < totalAmount) {
-                setError("Số dư không đủ để thực hiện thanh toán.");
-                setTimeout(() => setError(null), 3000);
-                return;
-            }
-
-            setIsPaymentProcessing(true);
-            const user = JSON.parse(localStorage.getItem("user"));
-            if (!user || !user.id) {
-                setError("Vui lòng đăng nhập để thực hiện thanh toán.");
-                setIsPaymentProcessing(false);
-                return;
-            }
-
-            const response = await fetch(`http://localhost:3000/api/bookings/pay/${bookingId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${user.id}`,
-                },
-                body: JSON.stringify({ price: totalAmount })
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                const errorData = JSON.parse(errorText || '{}');
-                setError(errorData.error || "Lỗi thanh toán");
-                setIsPaymentProcessing(false);
-                setTimeout(() => setError(null), 3000);
-                return;
-            }
-
-            const data = await response.json();
-            if (data.message === "Thanh toán thành công, chờ admin xác nhận") {
-                setSuccessMessage("Thanh toán thành công, chờ admin xác nhận");
-                setIsPaymentDone(true);
-                if (onPaymentSuccess) onPaymentSuccess(bookingId); // Gọi hàm khi thanh toán thành công
-                setTimeout(() => {
-                    setSuccessMessage(null);
-                    navigate("/bookings");
-                }, 3000);
-            }
-        } catch (err) {
-            console.error("Error processing payment:", err);
-            setError("Lỗi khi thanh toán: " + err.message);
-            setIsPaymentProcessing(false);
-            setTimeout(() => setError(null), 3000);
-        }
     };
 
     const formattedDeadline = paymentDeadline.toLocaleString("vi-VN", {
@@ -160,16 +36,145 @@ const PaymentPage = ({ onPaymentSuccess }) => { // Thêm onPaymentSuccess vào p
         year: "numeric",
     }).replace(/(\d+)\/(\d+)\/(\d+)/, "$2/$1/$3");
 
-    if (price === null || userBalance === null) {
-        return <div>Đang tải thông tin thanh toán...</div>;
+    return (
+        <div className="timer" onClick={onCancel}>
+            <span>Thời gian thanh toán</span>
+            <span className="time-left">{formatTime(timeLeft)}</span>
+            <button className="cancel-button" onClick={onCancel}>Hủy</button>
+            <p>Thanh toán trước: {formattedDeadline}</p>
+        </div>
+    );
+};
+
+const PaymentPage = ({ onPaymentSuccess }) => {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const queryParams = new URLSearchParams(location.search);
+    const bookingIds = useMemo(() => queryParams.get('bookingIds') ? queryParams.get('bookingIds').split(',') : [queryParams.get('bookingId')], [location.search]);
+
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null);
+    const [userBalance, setUserBalance] = useState(null);
+    const [isPaymentPending, setIsPaymentPending] = useState(false);
+    const [isPaymentDone, setIsPaymentDone] = useState(false);
+    const [notifications, setNotifications] = useState([]);
+
+    const fetchBookingDetails = useCallback(async () => {
+        try {
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (!user || !user.id) {
+                throw new Error("Vui lòng đăng nhập để xem thông tin thanh toán.");
+            }
+
+            console.log("[PAYMENT] Fetching user balance for userId:", user.id);
+            setUserBalance(parseFloat(user.balance) || 0);
+            setNotifications([]);
+
+            const response = await fetch(`http://localhost:3000/api/notifications`, {
+                headers: { "Authorization": `Bearer ${user.id}` },
+            });
+            if (!response.ok) throw new Error(`Lỗi API: ${response.status}`);
+            const data = await response.json();
+
+            const pendingBookings = data
+                .filter(item => item.status === 1)
+                .map(item => ({
+                    room: item.hotel_name && item.room_number ? `${item.hotel_name} - Phòng ${item.room_number}` : `Phòng ${item.room_number || 'Không xác định'}`,
+                    price: parseFloat(item.total_price) || 0,
+                    bookingId: item.booking_id
+                }))
+                .filter(item => item.price > 0 && (bookingIds.length === 0 || bookingIds.includes(item.bookingId.toString())));
+            setNotifications(pendingBookings);
+        } catch (err) {
+            console.error("[PAYMENT] Error fetching booking details:", err);
+            setErrorMessage(err.message);
+        }
+    }, [bookingIds]);
+
+    useEffect(() => {
+        fetchBookingDetails();
+    }, [fetchBookingDetails, bookingIds]);
+
+    const totalAmount = useMemo(() => notifications.reduce((sum, item) => sum + (item.price || 0), 0), [notifications]);
+
+    const handleCancel = useCallback(() => {
+        navigate(-1);
+    }, [navigate]);
+
+    const handlePayment = useCallback(async () => {
+        try {
+            console.log("[PAYMENT] Handle payment triggered, notifications:", notifications);
+            if (isPaymentDone) {
+                setErrorMessage("Phòng này đã được thanh toán.");
+                return;
+            }
+
+            if (userBalance < totalAmount) {
+                setErrorMessage("Số dư không đủ để thực hiện thanh toán.");
+                return;
+            }
+
+            if (!totalAmount || totalAmount <= 0) {
+                setErrorMessage("Số tiền thanh toán không hợp lệ.");
+                return;
+            }
+
+            if (notifications.length === 0) {
+                setErrorMessage("Không có booking nào cần thanh toán.");
+                return;
+            }
+
+            setIsPaymentPending(true);
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (!user || !user.id) {
+                throw new Error("Vui lòng đăng nhập để thực hiện thanh toán.");
+            }
+
+            const paymentPromises = notifications.map(async (item) => {
+                console.log("[PAYMENT] Sending payment request: bookingId=", item.bookingId, "price=", item.price);
+                const response = await fetch(`http://localhost:3000/api/bookings/pay/${item.bookingId}`, {
+                    method: "POST",
+                    headers: { "Authorization": `Bearer ${user.id}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({ price: item.price })
+                });
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("[PAYMENT] Payment error for bookingId", item.bookingId, ":", errorText);
+                    throw new Error(`Lỗi thanh toán: ${response.status} - ${errorText}`);
+                }
+                return response.json();
+            });
+
+            const results = await Promise.all(paymentPromises);
+            const allSuccess = results.every(r => r.message === "Thanh toán thành công");
+
+            if (allSuccess) {
+                setSuccessMessage("Thanh toán thành công!");
+                setIsPaymentDone(true);
+                onPaymentSuccess?.(notifications.map(n => n.bookingId));
+                setTimeout(() => navigate("/bookings"), 3000);
+            }
+        } catch (err) {
+            console.error("[PAYMENT] Error processing payment:", err);
+            setErrorMessage("Lỗi khi thanh toán: " + err.message);
+        } finally {
+            setIsPaymentPending(false);
+            setTimeout(() => setErrorMessage(null), 3000);
+        }
+    }, [isPaymentDone, userBalance, totalAmount, notifications, navigate, onPaymentSuccess]);
+
+    console.log("[PAYMENT] Rendering PaymentPage, notifications:", notifications, "errorMessage:", errorMessage);
+
+    if (notifications.length === 0 && !errorMessage) {
+        return <div>Đang tải thông tin thanh toán... hoặc không có booking chờ duyệt.</div>;
     }
 
     return (
         <div className="payment-container">
-            {!isPaymentDone && (
+            {!isPaymentDone && notifications.length > 0 && (
                 <div className="notification">
-                    {notifications.map((item, index) => (
-                        <div key={index}>
+                    {notifications.map((item) => (
+                        <div key={item.bookingId}>
                             <p>Thanh toán cho {item.room}</p>
                             <p>Giá: {item.price.toLocaleString()} VNĐ</p>
                         </div>
@@ -177,16 +182,12 @@ const PaymentPage = ({ onPaymentSuccess }) => { // Thêm onPaymentSuccess vào p
                     <p><strong>Tổng cộng: {totalAmount.toLocaleString()} VNĐ</strong></p>
                 </div>
             )}
-
+            {errorMessage && <div className="notification error">{errorMessage}</div>}
             <div className="payment-header">
-                <div className="timer" onClick={handleCancel}>
-                    <span>Thời gian thanh toán</span>
-                    <span className="time-left">{formatTime(timeLeft)}</span>
-                    <button className="cancel-button" onClick={handleCancel}>Hủy</button>
-                </div>
+                <Timer isPaymentDone={isPaymentDone} onCancel={handleCancel} />
                 <div className="payment-info">
                     <span className="payment-info-title">Chi tiết</span>
-                    <p>Mã đặt chỗ: {bookingId}</p>
+                    <p>Mã đặt chỗ: {notifications.map(n => n.bookingId).join(', ')}</p>
                     <div className="price-section">
                         <span className="price-label">Số tiền cần thanh toán</span>
                         <p className="price-highlight">{totalAmount.toLocaleString()} VNĐ</p>
@@ -196,9 +197,7 @@ const PaymentPage = ({ onPaymentSuccess }) => { // Thêm onPaymentSuccess vào p
             </div>
             <h2>Quét mã QR để thanh toán</h2>
             <div className="payment-note">
-                <p>
-                    Vui lòng hoàn tất thanh toán trước thời gian quy định. Nếu không, giao dịch sẽ tự động hủy trong vòng 10 ngày làm việc.
-                </p>
+                <p>Vui lòng hoàn tất thanh toán trước thời gian quy định. Nếu không, giao dịch sẽ tự động hủy trong vòng 10 ngày làm việc.</p>
             </div>
             <div className="payment-content">
                 <div className="qr-code-section">
@@ -207,23 +206,19 @@ const PaymentPage = ({ onPaymentSuccess }) => { // Thêm onPaymentSuccess vào p
                         <a href="http://localhost:3000/images/QRCODE/QR.jpg" download className="qr-download">Tải về mã QR</a>
                     </div>
                     <div className="qr-content">
-                        <p>Traveloka Việt Nam</p>
+                        <p>TRAVELGO </p>
                         <img src="http://localhost:3000/images/QRCODE/QR.jpg" alt="Mã QR thanh toán" className="qr-image" />
-                        <p className="payment-deadline">
-                            Thanh toán trước: {formattedDeadline}
-                        </p>
                     </div>
                 </div>
             </div>
             <button 
                 className="confirm-payment-button" 
                 onClick={handlePayment} 
-                disabled={isPaymentProcessing || isPaymentDone}
+                disabled={isPaymentPending || isPaymentDone || notifications.length === 0}
             >
-                {isPaymentProcessing ? "Đang chờ duyệt thanh toán" : "Thanh toán"}
+                {isPaymentPending ? "Đang xử lý thanh toán" : "Thanh toán"}
             </button>
             {successMessage && <div className="notification success">{successMessage}</div>}
-            {error && <div className="notification error">{error}</div>}
             <div className="payment-instructions">
                 <h3>Hướng dẫn thanh toán QR</h3>
                 <ol>
@@ -236,4 +231,4 @@ const PaymentPage = ({ onPaymentSuccess }) => { // Thêm onPaymentSuccess vào p
     );
 };
 
-export default PaymentPage;
+export default React.memo(PaymentPage);

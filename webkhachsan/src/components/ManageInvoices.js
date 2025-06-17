@@ -6,6 +6,7 @@ const ManageInvoices = () => {
     const [stats, setStats] = useState({ daily: 0, monthly: 0, yearly: 0 });
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [successMessage, setSuccessMessage] = useState(null);
 
     useEffect(() => {
         const fetchInvoices = async () => {
@@ -105,11 +106,15 @@ const ManageInvoices = () => {
                 throw new Error(errorText || 'Lỗi khi xác nhận hóa đơn');
             }
 
-            const updatedInvoice = await response.json();
+            const data = await response.json();
             setInvoices(invoices.map(invoice =>
-                invoice.invoice_id === invoiceId ? { ...invoice, ...updatedInvoice } : invoice
+                invoice.invoice_id === invoiceId ? { ...invoice, status: 'completed' } : invoice
             ));
-            alert('Xác nhận hóa đơn thành công!');
+            setSuccessMessage(data.message);
+            // Gửi sự kiện đến Header để làm mới thông báo (nếu cần)
+            const event = new Event('invoiceApproved');
+            window.dispatchEvent(event);
+            setTimeout(() => setSuccessMessage(null), 3000);
         } catch (err) {
             console.error('Error approving invoice:', err);
             setError('Lỗi khi xác nhận hóa đơn: ' + err.message);
@@ -133,11 +138,12 @@ const ManageInvoices = () => {
                     throw new Error(errorText || 'Lỗi khi từ chối hóa đơn');
                 }
 
-                const updatedInvoice = await response.json();
+                const data = await response.json();
                 setInvoices(invoices.map(invoice =>
-                    invoice.invoice_id === invoiceId ? { ...invoice, ...updatedInvoice } : invoice
+                    invoice.invoice_id === invoiceId ? { ...invoice, status: 'rejected' } : invoice
                 ));
-                alert('Từ chối hóa đơn thành công!');
+                setSuccessMessage(data.message);
+                setTimeout(() => setSuccessMessage(null), 3000);
             } catch (err) {
                 console.error('Error rejecting invoice:', err);
                 setError('Lỗi khi từ chối hóa đơn: ' + err.message);
@@ -169,6 +175,8 @@ const ManageInvoices = () => {
     return (
         <div className="manage-invoices">
             <h2>Quản lý Hóa đơn</h2>
+
+            {successMessage && <div className="success-message">{successMessage}</div>}
 
             <div className="stats-container">
                 <div className="stat-card">

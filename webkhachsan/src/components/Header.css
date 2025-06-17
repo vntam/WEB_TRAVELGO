@@ -1,80 +1,85 @@
-/* Định nghĩa biến CSS */
+
+/* CSS Variables */
 :root {
-  --primary-start: #1e3c72; /* Giữ màu xám đậm */
-  --primary-end: #2a5298; /* Giữ màu xanh dương đậm */
+  --primary-start: #1e3c72; /* Xanh đậm gradient */
+  --primary-end: #2a5298; /* Xanh sáng gradient */
   --accent-color: #f1c40f; /* Vàng nổi bật */
-  --text-color: #ffffff;
-  --shadow-color: rgba(0, 0, 0, 0.25);
-  --button-danger: #e74c3c; /* Đỏ đậm */
-  --button-danger-hover: #c0392b;
-  --notification-bg: #ffffff; /* Nền dropdown */
-  --notification-border: #e0e0e0; /* Viền dropdown */
-  --notification-hover: #f0f8ff; /* Màu hover dropdown */
+  --text-color: #ffffff; /* Trắng */
+  --text-secondary: #1a202c; /* Xám đậm hơn cho độ tương phản */
+  --dropdown-bg: #ffffff; /* Nền dropdown */
+  --dropdown-hover: #e6f0fa; /* Hover dropdown sáng hơn */
+  --dropdown-border: linear-gradient(90deg, #e0e8f0, #d0d8e8); /* Viền gradient */
+  --button-danger: #e74c3c; /* Đỏ logout */
+  --button-danger-hover: #c0392b; /* Đỏ đậm khi hover */
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.08); /* Shadow nhẹ */
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.12); /* Shadow trung bình */
+  --highlight-bg: linear-gradient(135deg, #2a5298, #1e3c72); /* Gradient nổi bật */
 }
 
-/* Reset mặc định */
+/* Reset Defaults */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-nav {
+/* Header Navigation */
+.header-nav {
   background: linear-gradient(90deg, var(--primary-start), var(--primary-end));
-  padding: 1.5rem 3rem;
+  padding: 1.25rem 2.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 6px 20px var(--shadow-color);
+  box-shadow: var(--shadow-sm);
   position: sticky;
   top: 0;
   z-index: 1000;
-  font-family: 'Roboto', sans-serif;
-  transition: all 0.3s ease;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+/* Logo Styles */
 .logo a {
   color: var(--text-color);
   text-decoration: none;
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  padding: 0.7rem 1.2rem;
+  padding: 0.5rem 1rem;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);
-  transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .logo a:hover {
-  transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.2);
   color: var(--accent-color);
+  transform: translateY(-2px);
 }
 
 /* Navigation Links */
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .nav-links a {
   color: var(--text-color);
   text-decoration: none;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
-  padding: 0.7rem 1.5rem;
-  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
   position: relative;
-  transition: color 0.3s ease, background 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .nav-links a::after {
   content: '';
   position: absolute;
   width: 0;
-  height: 3px;
+  height: 2px;
   background: var(--accent-color);
-  bottom: 0;
+  bottom: -2px;
   left: 50%;
   transform: translateX(-50%);
   transition: width 0.3s ease;
@@ -88,68 +93,24 @@ nav {
 
 .nav-links a:hover::after,
 .nav-links a.active::after {
-  width: 70%;
+  width: 60%;
 }
 
 /* User Section */
 .user-section {
   display: flex;
   align-items: center;
-  gap: 1rem; /* Giảm khoảng cách để "Xin chào" và các phần tử khác sát nhau hơn */
-  position: relative;
-}
-
-.greeting {
-  color: var(--text-color);
-  font-size: 1.2rem; /* Nhấn mạnh "Xin chào" */
-  font-weight: 600;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.2);
-  transition: transform 0.3s ease, background 0.3s ease;
-}
-
-.greeting:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.user-info {
-  color: var(--text-color);
-  font-size: 1.1rem;
-  font-weight: 500;
-  padding: 0.7rem 1.5rem;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 20px;
-  box-shadow: 0 2px 10px var(--shadow-color);
-  transition: transform 0.3s ease, background 0.3s ease;
-}
-
-.user-info:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.3);
+  gap: 1rem;
 }
 
 .user-section a {
   color: var(--text-color);
   text-decoration: none;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
-  padding: 0.7rem 1.5rem;
-  border-radius: 8px;
-  transition: color 0.3s ease, background 0.3s ease;
-}
-
-.user-section a::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 3px;
-  background: var(--accent-color);
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  transition: width 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
 }
 
 .user-section a:hover,
@@ -158,28 +119,105 @@ nav {
   background: rgba(255, 255, 255, 0.15);
 }
 
-.user-section a:hover::after,
-.user-section a.active::after {
-  width: 70%;
+/* User Controls (New container for bell and user menu) */
+.user-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* Khoảng cách giữa chuông và menu người dùng */
 }
 
-.user-section button {
-  background: var(--button-danger);
-  color: var(--text-color);
+/* User Menu Button */
+.user-button {
+  background: var(--highlight-bg);
   border: none;
-  padding: 0.7rem 1.8rem;
-  border-radius: 20px;
+  color: var(--text-color);
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
-  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
 }
 
-.user-section button:hover {
-  background: var(--button-danger-hover);
+.user-button:hover {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(231, 76, 60, 0.6);
+  box-shadow: var(--shadow-md);
+}
+
+.greeting {
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.balance {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+/* User Dropdown */
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--dropdown-bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  min-width: 240px;
+  z-index: 1000;
+  margin-top: 0.75rem;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-image: var(--dropdown-border) 1;
+  animation: dropdownFade 0.35s ease-out forwards;
+}
+
+.user-dropdown a,
+.user-dropdown button {
+  color: var(--text-secondary);
+  padding: 0.85rem 1.5rem;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 400;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.user-dropdown a:hover,
+.user-dropdown button:hover {
+  background: var(--dropdown-hover);
+  color: var(--primary-start);
+  transform: translateX(6px);
+}
+
+.user-dropdown a::before,
+.user-dropdown button::before {
+  content: '→';
+  margin-right: 0.75rem;
+  color: var(--accent-color);
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.logout-btn {
+  color: var(--button-danger);
+  font-weight: 600;
+  border-top: 1px solid var(--dropdown-border);
+}
+
+.logout-btn:hover {
+  background: var(--dropdown-hover);
+  color: var(--button-danger-hover);
 }
 
 /* Notification Bell */
@@ -193,54 +231,59 @@ nav {
   font-size: 1.5rem;
   cursor: pointer;
   color: var(--text-color);
-  transition: transform 0.3s ease, color 0.3s ease;
-  display: flex;
-  align-items: center;
   padding: 0.5rem;
   border-radius: 50%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .bell-button:hover {
-  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.2);
   color: var(--accent-color);
+  transform: scale(1.1);
 }
 
 .notification-count {
   position: absolute;
   top: -5px;
   right: -5px;
-  background-color: var(--button-danger);
+  background: var(--button-danger);
   color: var(--text-color);
   border-radius: 50%;
-  padding: 2px 6px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  min-width: 1rem;
-  text-align: center;
+  padding: 3px 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
 }
 
+/* Notification Dropdown */
 .notification-dropdown {
   position: absolute;
   top: 100%;
   right: 0;
-  background-color: var(--notification-bg);
-  border-radius: 10px;
-  box-shadow: 0 6px 20px var(--shadow-color);
-  width: 350px;
-  max-height: 450px;
+  background: var(--dropdown-bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  width: 320px;
+  max-height: 500px; /* Đảm bảo hiển thị nhiều thông báo */
   overflow-y: auto;
+  scroll-behavior: smooth; /* Cuộn mượt mà */
   z-index: 1000;
-  margin-top: 5px;
-  animation: slideDown 0.2s ease-out;
+  margin-top: 0.75rem;
+  border: 1px solid transparent;
+  border-image: var(--dropdown-border) 1;
+  animation: dropdownFade 0.35s ease-out forwards;
 }
 
 .notification-item {
   display: block;
-  padding: 15px 20px;
-  border-bottom: 1px solid var(--notification-border);
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--dropdown-border);
   text-decoration: none;
-  color: #333;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  color: var(--text-secondary);
+  transition: all 0.25s ease;
 }
 
 .notification-item:last-child {
@@ -248,8 +291,8 @@ nav {
 }
 
 .notification-item:hover {
-  background-color: var(--notification-hover);
-  transform: translateX(5px);
+  background: var(--dropdown-hover);
+  transform: translateX(6px);
 }
 
 .notification-content {
@@ -258,85 +301,104 @@ nav {
 }
 
 .notification-title {
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 500;
   color: var(--primary-start);
+  margin-bottom: 0.3rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .notification-price {
-  font-size: 14px;
-  color: #555;
-  margin-top: 5px;
+  font-size: 0.9rem;
+  color: #4a5568;
+  font-weight: 400;
 }
 
 .no-notifications {
-  padding: 15px 20px;
+  padding: 1.25rem 1.5rem;
   text-align: center;
-  color: #888;
+  color: #718096;
+  font-size: 0.95rem;
   font-style: italic;
 }
 
-/* Animation */
-@keyframes slideDown {
+/* Bulk Payment Button */
+.bulk-payment-button {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  background: var(--highlight-bg);
+  color: var(--text-color);
+  border: none;
+  border-top: 1px solid var(--dropdown-border);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.bulk-payment-button:hover {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  transform: translateY(-2px);
+}
+
+.bulk-payment-button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  color: #666666;
+}
+
+/* Dropdown Animation */
+@keyframes dropdownFade {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-12px) scale(0.96);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  nav {
+  .header-nav {
     flex-direction: column;
-    padding: 1rem;
+    padding: 1rem 1.5rem;
   }
 
   .logo,
   .nav-links,
   .user-section {
-    margin: 0.8rem 0;
+    margin: 0.5rem 0;
     width: 100%;
     text-align: center;
   }
 
   .nav-links {
     flex-direction: column;
-    gap: 1rem;
-  }
-
-  .nav-links a,
-  .user-section a,
-  .user-section button {
-    width: 100%;
-    padding: 0.8rem;
-  }
-
-  .user-info {
-    width: 100%;
-    text-align: center;
-    padding: 0.8rem;
+    gap: 0.75rem;
   }
 
   .user-section {
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
-  .greeting {
+  .user-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .user-button {
+    align-items: center;
+  }
+
+  .notification-dropdown,
+  .user-dropdown {
     width: 100%;
-    text-align: center;
-  }
-
-  .notification-dropdown {
-    width: 280px;
-    right: -20px;
+    right: 0;
   }
 }
 
@@ -346,23 +408,33 @@ nav {
   }
 
   .nav-links a,
-  .user-section a,
-  .user-info,
-  .greeting {
-    font-size: 1rem;
+  .user-section a {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
   }
 
-  .user-section button {
+  .user-button {
+    padding: 0.5rem;
+  }
+
+  .greeting {
     font-size: 0.9rem;
-    padding: 0.6rem 1.5rem;
+  }
+
+  .balance {
+    font-size: 0.8rem;
   }
 
   .bell-button {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
 
   .notification-dropdown {
-    width: 220px;
+    width: 100%;
+    max-height: 400px; /* Giảm chiều cao trên màn hình nhỏ */
+  }
+
+  .user-dropdown {
+    min-width: 200px;
   }
 }
-

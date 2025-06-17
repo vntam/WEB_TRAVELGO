@@ -1,0 +1,150 @@
+.admin-transaction-container {
+    padding: 40px 20px; /* Đồng nhất padding với ManagerRoomBooked */
+    width: 100%; /* Full width */
+    margin: 0 auto; /* Căn giữa nội dung */
+    background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%); /* Thay đổi màu nền bên ngoài thành xanh giống ManagerRoomBooked */
+    border-radius: 18px; /* Giữ radius */
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1); /* Giữ shadow */
+    min-height: 100vh;
+    font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Giữ font */
+}
+
+.admin-transaction-container h2 {
+    color: #1e3a8a; /* Giữ màu chữ tiêu đề */
+    margin-bottom: 25px; /* Giữ margin */
+    font-size: 36px; /* Giữ kích thước */
+    font-weight: 700; /* Giữ font-weight */
+    text-align: center; /* Giữ căn giữa */
+    text-transform: uppercase; /* Giữ uppercase */
+    letter-spacing: 1.5px; /* Giữ letter-spacing */
+    background: linear-gradient(90deg, #1e3a8a, #3b82f6); /* Giữ gradient text */
+    -webkit-background-clip: text; /* Giữ gradient text */
+    color: transparent; /* Giữ gradient text */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Giữ shadow */
+}
+
+.transaction-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 20px; /* Giữ margin */
+    background-color: #ffffff; /* Giữ nền trắng cho bảng */
+    border-radius: 12px; /* Giữ radius */
+    overflow: hidden; /* Giữ overflow */
+    border: 1px solid #e5e7eb; /* Giữ border */
+}
+
+.transaction-table th,
+.transaction-table td {
+    padding: 18px 25px; /* Giữ padding */
+    text-align: left; /* Giữ căn trái */
+    border-bottom: 1px solid #f3f4f6; /* Giữ border */
+    transition: all 0.3s ease; /* Giữ transition */
+}
+
+.transaction-table th {
+    background: linear-gradient(90deg, #1e3a8a, #3b82f6); /* Giữ gradient header */
+    color: #ffffff; /* Giữ màu chữ trắng */
+    font-weight: 600; /* Giữ font-weight */
+    text-transform: uppercase; /* Giữ uppercase */
+    font-size: 14px; /* Giữ kích thước */
+    position: sticky; /* Giữ sticky */
+    top: 0; /* Giữ top */
+    z-index: 1; /* Giữ z-index */
+}
+
+.transaction-table tr:nth-child(even) {
+    background-color: #f9fafb; /* Giữ màu nền xen kẽ */
+}
+
+.transaction-table tr:hover {
+    background-color: #f0f9ff; /* Giữ màu hover */
+    transform: translateY(-3px); /* Giữ hiệu ứng hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05); /* Giữ shadow hover */
+}
+
+.transaction-table td:first-child {
+    color: #374151; /* Giữ màu chữ */
+    font-weight: 500; /* Giữ font-weight */
+}
+
+.transaction-table td:nth-child(2) {
+    color: #065f46; /* Giữ màu xanh lá */
+    font-weight: 600; /* Giữ font-weight */
+}
+
+.transaction-table td:nth-child(3) {
+    font-weight: 600; /* Giữ font-weight */
+    color: #dc2626; /* Giữ màu đỏ */
+}
+
+.transaction-table td:last-child {
+    color: #6b7280; /* Giữ màu chữ */
+    font-size: 15px; /* Giữ kích thước */
+    word-break: break-word; /* Giữ word-break */
+}
+
+.error-message {
+    color: #dc2626; /* Giữ màu đỏ */
+    text-align: center; /* Giữ căn giữa */
+    margin-bottom: 15px; /* Giữ margin */
+    font-weight: 500; /* Giữ font-weight */
+    background-color: #fee2e2; /* Giữ background */
+    padding: 12px; /* Giữ padding */
+    border-radius: 8px; /* Giữ radius */
+    border-left: 5px solid #dc2626; /* Giữ border */
+}
+
+.no-transactions {
+    text-align: center; /* Giữ căn giữa */
+    color: #6b7280; /* Giữ màu chữ */
+    font-style: italic; /* Giữ style */
+    padding: 20px; /* Giữ padding */
+    background-color: #f9fafb; /* Giữ background */
+    border-radius: 8px; /* Giữ radius */
+}
+
+.loading {
+    text-align: center; /* Giữ căn giữa */
+    color: #6b7280; /* Giữ màu */
+    font-size: 18px; /* Giữ kích thước */
+    padding: 20px; /* Giữ padding */
+}
+
+@media (max-width: 768px) {
+    .admin-transaction-container {
+        margin: 20px; /* Giữ margin */
+        padding: 15px; /* Giữ padding */
+    }
+
+    .admin-transaction-container h2 {
+        font-size: 28px; /* Giữ kích thước */
+    }
+
+    .transaction-table th,
+    .transaction-table td {
+        padding: 12px 15px; /* Giữ padding */
+        font-size: 13px; /* Giữ kích thước */
+    }
+
+    .transaction-table th {
+        font-size: 12px; /* Giữ kích thước */
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-transaction-container {
+        margin: 10px; /* Giữ margin */
+        padding: 10px; /* Giữ padding */
+    }
+
+    .admin-transaction-container h2 {
+        font-size: 22px; /* Giữ kích thước */
+    }
+
+    .transaction-table th,
+    .transaction-table td {
+        padding: 8px 10px; /* Giữ padding */
+        font-size: 11px; /* Giữ kích thước */
+    }
+}

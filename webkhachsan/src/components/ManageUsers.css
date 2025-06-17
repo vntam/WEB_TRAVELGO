@@ -1,21 +1,32 @@
 .manage-users-container {
-    padding: 20px;
-    max-width: 1200px;
+    padding: 40px 20px;
+    width: 100%; /* Thay max-width: 1200px bằng width: 100% để full width */
     margin: 0 auto;
-    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%); /* Màu xanh giống ManagerRoomBooked */
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif; /* Thay Arial bằng Inter để đồng nhất */
 }
 
 .manage-users-container h2 {
     text-align: center;
-    color: #333;
-    margin-bottom: 20px;
+    color: #1e3a8a; /* Màu xanh đậm hơn để đồng nhất */
+    margin-bottom: 40px;
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
 }
 
 .error-message {
-    color: #dc3545;
+    color: #b91c1c; /* Màu đỏ đậm hơn để nổi bật */
     text-align: center;
     margin-bottom: 15px;
-    font-weight: bold;
+    font-weight: 500;
+    padding: 20px;
+    background: #fef2f2;
+    border-radius: 10px;
+    border: 1px solid #fee2e2;
 }
 
 .user-form {
@@ -23,6 +34,7 @@
     gap: 10px;
     margin-bottom: 20px;
     flex-wrap: wrap;
+    justify-content: center; /* Căn giữa form */
 }
 
 .user-form input {
@@ -30,38 +42,48 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
+    width: 200px; /* Định width cố định cho input */
 }
 
 .user-form button {
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: #10b981; /* Màu xanh lá cây cho nút, đồng nhất với approve-button */
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .user-form button:hover {
-    background-color: #0056b3;
+    background-color: #059669; /* Màu đậm hơn khi hover */
+    transform: translateY(-2px);
 }
 
 .users-table {
     width: 100%;
     border-collapse: collapse;
     background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    margin-bottom: 48px;
 }
 
 .users-table th, .users-table td {
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 .users-table th {
-    background-color: #007bff;
-    color: white;
+    background-color: #e0f2fe; /* Màu xanh nhạt cho header */
+    color: #1e3a8a; /* Màu chữ đồng nhất */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .users-table tr:nth-child(even) {
@@ -69,7 +91,7 @@
 }
 
 .users-table tr:hover {
-    background-color: #f1f1f1;
+    background-color: #f0f9ff; /* Màu hover đồng nhất với nền */
 }
 
 .edit-btn, .delete-btn {
@@ -78,22 +100,57 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .edit-btn {
-    background-color: #28a745;
-    color: white;
+    background-color: #28a745; /* Màu xanh lá */
 }
 
 .edit-btn:hover {
     background-color: #218838;
+    transform: translateY(-2px);
 }
 
 .delete-btn {
-    background-color: #dc3545;
-    color: white;
+    background-color: #dc3545; /* Màu đỏ */
 }
 
 .delete-btn:hover {
     background-color: #c82333;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .manage-users-container {
+        padding: 24px 16px;
+    }
+
+    .user-form input {
+        width: 100%; /* Full width trên mobile */
+    }
+
+    .users-table th, .users-table td {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .users-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .user-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .user-form button {
+        width: 100%;
+    }
 }

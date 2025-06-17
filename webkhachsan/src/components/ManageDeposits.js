@@ -69,6 +69,7 @@ const ManageDeposits = ({ userId }) => {
                             <th>Tên Người Dùng</th>
                             <th>Email</th>
                             <th>Số Tiền</th>
+                            <th>Phương thức</th>
                             <th>Thời Gian</th>
                             <th>Hành Động</th>
                         </tr>
@@ -80,6 +81,7 @@ const ManageDeposits = ({ userId }) => {
                                 <td>{deposit.name}</td>
                                 <td>{deposit.email}</td>
                                 <td>{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(deposit.amount)}</td>
+                                <td>{deposit.payment_method || 'Chưa xác định'}</td> {/* Sử dụng payment_method từ API */}
                                 <td>{new Date(deposit.created_at).toLocaleString('vi-VN')}</td>
                                 <td>
                                     <button onClick={() => handleApprove(deposit.id)} className="approve-btn">Duyệt</button>

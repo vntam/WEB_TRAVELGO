@@ -1,0 +1,114 @@
+.profile-edit-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%); /* Thay đổi màu nền bên ngoài thành xanh giống ManagerRoomBooked */
+}
+
+.profile-edit-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.profile-edit-card h2 {
+    text-align: center;
+    color: #1e3c72;
+    margin-bottom: 20px;
+}
+
+.profile-edit-card h3 {
+    color: #2a5298;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.profile-form, .password-form, .forgot-password-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.save-btn, .support-btn {
+    background-color: #2a5298;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+.save-btn:hover, .support-btn:hover {
+    background-color: #1e3c72;
+}
+
+.error {
+    color: #dc3545;
+    text-align: center;
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.success {
+    color: #28a745;
+    text-align: center;
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.tab, .tab-active {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.tab-active {
+    background-color: #2a5298;
+    color: white;
+}
+
+.tab:hover {
+    background-color: #ddd;
+}
+
+.forgot-password-form p {
+    text-align: center;
+    color: #555;
+    margin-bottom: 10px;
+}

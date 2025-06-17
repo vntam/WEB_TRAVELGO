@@ -101,6 +101,101 @@
     font-weight: 500;
 }
 
+.deposit-container {
+    font-family: Arial, sans-serif;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.deposit-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.deposit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.deposit-form label {
+    font-weight: bold;
+    color: #333;
+}
+
+.deposit-form select,
+.deposit-form input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.deposit-form select {
+    appearance: none;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="%23333" viewBox="0 0 16 16"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>') no-repeat right 10px center;
+    padding-right: 30px;
+}
+
+.deposit-options {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    gap: 5px;
+}
+
+.deposit-options button {
+    padding: 8px 15px;
+    background: linear-gradient(90deg, #4CAF50, #388E3C);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    flex: 1;
+}
+
+.deposit-options button:hover {
+    background: linear-gradient(90deg, #45a049, #2E7D32);
+}
+
+.deposit-form button[type="submit"] {
+    padding: 12px;
+    background: linear-gradient(90deg, #4CAF50, #388E3C);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.deposit-form button[type="submit"]:disabled {
+    background: linear-gradient(90deg, #95a5a6, #7f8c8d);
+    cursor: not-allowed;
+}
+
+.deposit-form button[type="submit"]:hover:not(:disabled) {
+    background: linear-gradient(90deg, #45a049, #2E7D32);
+}
+
+.error {
+    color: #d32f2f;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.success {
+    color: #2e7d32;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+
 /* Responsive Design */
 @media (max-width: 600px) {
     .deposit-container {
@@ -117,3 +212,4 @@
         max-width: 100%;
     }
 }
+

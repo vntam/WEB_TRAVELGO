@@ -27,11 +27,11 @@ import khuyenmai_2 from '../images/promotion/khuyenmai_2.jpg';
 import khuyenmai_3 from '../images/promotion/khuyenmai_3.jpg';
 
 const hotelPartners = [
-    { name: "AIL", description: "ACCOP LIVE LIMITLESS", logo: ailLogo },
-    { name: "ASIAN RUBBY", description: "CHOICE", logo: annualReportLogo },
-    { name: "EHG", description: "DISCOUNTY SERVICE", logo: ehgLogo },
+    { name: "ALL", description: "ACCOP LIVE LIMITLESS", logo: ailLogo },
+    { name: "AR", description: "ASIAN RUBBY", logo: annualReportLogo },
+    { name: "CBH", description: "CHURCH BOUTIQUE HOTELS", logo: ehgLogo },
     { name: "Fusion", logo: fusionLogo },
-    { name: "ODYSSEA", description: "Industry", logo: odysseaLogo },
+    { name: "ODYSSEA", description: "ODYSSEA", logo: odysseaLogo },
     { name: "FLC", logo: noxiLogo },
     { name: "EHG", logo: ehg },
     { name: "MARRIROT", logo: marirot }

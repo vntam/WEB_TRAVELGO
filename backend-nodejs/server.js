@@ -42,6 +42,7 @@ try {
   app.use('/api/bookings', require('./routes/bookings'));
   app.use('/api/invoices', require('./routes/invoices')); // Thêm route cho invoices
   app.use('/api/deposits', require('./routes/depositRoutes'));
+  app.use('/api/notifications', require('./routes/notifications'));
 } catch (error) {
   console.error('Error loading routes:', error);
   process.exit(1);

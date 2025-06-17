@@ -4,9 +4,9 @@ const mysql = require('mysql2/promise');
 
 const dbConfig = {
     host: 'localhost',
-    user: 'root', 
-    password: '', 
-    database: 'hotel', 
+    user: 'root',
+    password: '',
+    database: 'hotel',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -16,17 +16,17 @@ const pool = mysql.createPool(dbConfig);
 
 // Yêu cầu nạp tiền
 router.post('/request', async (req, res) => {
-    const { amount, userId } = req.body;
+    const { amount, userId, paymentMethod } = req.body;
 
-    if (!userId || !amount || isNaN(amount) || amount <= 0) {
-        return res.status(400).json({ message: 'Dữ liệu không hợp lệ.' });
+    if (!userId || !amount || isNaN(amount) || amount <= 0 || !paymentMethod) {
+        return res.status(400).json({ message: 'Dữ liệu không hợp lệ. Vui lòng cung cấp phương thức nạp tiền.' });
     }
 
     try {
         const connection = await pool.getConnection();
         await connection.execute(
-            'INSERT INTO deposits (user_id, amount, status) VALUES (?, ?, ?)',
-            [userId, amount, 'pending']
+            'INSERT INTO deposits (user_id, amount, status, payment_method) VALUES (?, ?, ?, ?)',
+            [userId, amount, 'pending', paymentMethod]
         );
         connection.release();
         res.status(200).json({ success: true, message: 'Yêu cầu nạp tiền đã được gửi' });
@@ -41,7 +41,7 @@ router.get('/pending', async (req, res) => {
     try {
         const connection = await pool.getConnection();
         const [rows] = await connection.execute(
-            `SELECT d.id, u.name, u.email, d.amount, d.created_at 
+            `SELECT d.id, u.name, u.email, d.amount, d.payment_method, d.created_at 
              FROM deposits d 
              JOIN signup u ON d.user_id = u.signup_id 
              WHERE d.status = 'pending'`
