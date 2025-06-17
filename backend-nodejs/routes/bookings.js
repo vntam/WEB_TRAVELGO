@@ -366,120 +366,64 @@ router.post("/pay/:bookingId", async (req, res) => {
         const { price: amount } = req.body;
         const userId = req.headers.authorization?.split(" ")[1];
 
-        console.log(`[PAYMENT] Processing payment for bookingId: ${bookingId}, userId: ${userId}, amount: ${amount}`);
+        console.log(`[PAYMENT] Processing payment request for bookingId: ${bookingId}, userId: ${userId}, amount: ${amount}`);
 
         if (!userId) {
-            console.log("[PAYMENT] No userId provided in Authorization header");
             return res.status(401).json({ error: "Vui lòng đăng nhập" });
         }
 
         if (!amount || amount <= 0) {
-            console.log("[PAYMENT] Invalid amount provided:", amount);
-            return res.status(400).json({ error: "Vui lòng cung cấp số tiền hợp lệ" });
+            return res.status(400).json({ error: "Số tiền thanh toán phải lớn hơn 0" });
         }
 
         connection = await getConnection();
         await connection.beginTransaction();
 
-        // Kiểm tra booking
         const bookingQuery = `
             SELECT b.*, s.balance AS user_balance
             FROM booking b
             JOIN signup s ON b.signup_id = s.signup_id
-            WHERE b.booking_id = ? AND b.signup_id = ? AND b.status = 1
+            WHERE b.booking_id = ? AND b.signup_id = ? AND b.status IN (0, 1) -- Chấp nhận status 0 hoặc 1
         `;
-        console.log("[PAYMENT] Checking booking: bookingId=", bookingId, "userId=", userId);
         const [booking] = await connection.execute(bookingQuery, [bookingId, userId]);
 
         if (booking.length === 0) {
-            console.log("[PAYMENT] Booking not found or not in pending status: bookingId=", bookingId, "userId=", userId);
-            return res.status(400).json({ 
-                error: "Booking không tồn tại, đã được thanh toán, hoặc đã hủy" 
-            });
+            return res.status(400).json({ error: "Booking không tồn tại hoặc không ở trạng thái chờ thanh toán" });
         }
 
-        const userBalance = parseFloat(booking[0].user_balance);
         const bookingPrice = parseFloat(booking[0].total_price);
-        if (userBalance < amount || Math.abs(amount - bookingPrice) > 0.01) { // Cho phép sai số nhỏ
-            console.log("[PAYMENT] Invalid payment: userBalance=", userBalance, "amount=", amount, "bookingPrice=", bookingPrice);
-            return res.status(400).json({ 
-                error: "Số dư không đủ hoặc số tiền thanh toán không khớp",
-                details: { userBalance, amount, bookingPrice }
-            });
+        if (bookingPrice <= 0 || Math.abs(amount - bookingPrice) > 0.01) {
+            return res.status(400).json({ error: "Số tiền thanh toán không khớp với giá booking" });
         }
 
-        // Trừ tiền người dùng
-        const updateUserBalanceQuery = `
-            UPDATE signup
-            SET balance = balance - ?
-            WHERE signup_id = ? AND balance >= ?
-        `;
-        console.log("[PAYMENT] Updating user balance: userId=", userId, "amount=", amount);
-        const [balanceUpdate] = await connection.execute(updateUserBalanceQuery, [amount, userId, amount]);
-        if (balanceUpdate.affectedRows === 0) {
-            throw new Error("Số dư không đủ để thực hiện giao dịch");
-        }
-
-        // Cộng tiền cho admin
-        const findAdminQuery = `
-            SELECT signup_id FROM role
-            WHERE role_name = 'admin' LIMIT 1
-        `;
-        console.log("[PAYMENT] Finding admin account");
-        const [admin] = await connection.execute(findAdminQuery);
-        if (!admin[0]) {
-            console.log("[PAYMENT] No admin found");
-            throw new Error("Không tìm thấy tài khoản admin");
-        }
-        const adminId = admin[0].signup_id;
-
-        const updateAdminBalanceQuery = `
-            UPDATE signup
-            SET balance = balance + ?
-            WHERE signup_id = ?
-        `;
-        console.log("[PAYMENT] Updating admin balance: adminId=", adminId, "amount=", amount);
-        await connection.execute(updateAdminBalanceQuery, [amount, adminId]);
-
-        // Tạo hóa đơn
-        const insertInvoiceQuery = `
-            INSERT INTO invoices (booking_id, user_id, amount, payment_date, status)
-            VALUES (?, ?, ?, NOW(), 'completed')
-        `;
-        console.log("[PAYMENT] Creating invoice: bookingId=", bookingId, "userId=", userId);
-        const [invoiceResult] = await connection.execute(insertInvoiceQuery, [bookingId, userId, amount]);
-
-        // Cập nhật trạng thái booking thành 2 (đã thanh toán)
+        // Cập nhật trạng thái booking thành 2 (đang chờ xác nhận)
         const updateBookingStatusQuery = `
             UPDATE booking
             SET status = 2
             WHERE booking_id = ?
         `;
-        console.log("[PAYMENT] Updating booking status to 2: bookingId=", bookingId);
         await connection.execute(updateBookingStatusQuery, [bookingId]);
 
+        // Tạo hóa đơn với trạng thái pending
+        const insertInvoiceQuery = `
+            INSERT INTO invoices (booking_id, user_id, amount, payment_date, status)
+            VALUES (?, ?, ?, NOW(), 'pending')
+        `;
+        const [invoiceResult] = await connection.execute(insertInvoiceQuery, [bookingId, userId, amount]);
+
         await connection.commit();
-        console.log("[PAYMENT] Payment processed successfully: bookingId=", bookingId, "invoiceId=", invoiceResult.insertId);
+        console.log("[PAYMENT] Payment request created successfully: bookingId=", bookingId, "invoiceId=", invoiceResult.insertId);
         res.json({ 
-            message: "Thanh toán thành công",
+            message: "Yêu cầu thanh toán đã được gửi, đang chờ xác nhận từ admin",
             bookingId,
             invoiceId: invoiceResult.insertId
         });
     } catch (error) {
         if (connection) await connection.rollback();
-        console.error("[PAYMENT] Error processing payment:", {
-            message: error.message,
-            stack: error.stack,
-            bookingId: req.params.bookingId,
-            userId: req.headers.authorization?.split(" ")[1],
-            body: req.body
-        });
+        console.error("[PAYMENT] Error processing payment request:", error);
         res.status(500).json({ error: "Lỗi server nội bộ", details: error.message });
     } finally {
-        if (connection) {
-            await connection.release();
-            console.log("[PAYMENT] Database connection released for POST /pay/:bookingId");
-        }
+        if (connection) await connection.release();
     }
 });
 // Xác nhận hóa đơn
@@ -490,14 +434,12 @@ router.put("/invoices/:invoiceId/approve", async (req, res) => {
         const adminId = req.headers.authorization?.split(" ")[1];
 
         if (!adminId) {
-            console.log("No adminId provided in Authorization header");
             return res.status(401).json({ error: "Vui lòng đăng nhập với vai trò admin" });
         }
 
         connection = await getConnection();
         await connection.beginTransaction();
 
-        // Kiểm tra vai trò admin
         const checkAdminQuery = `
             SELECT signup_id
             FROM role
@@ -506,24 +448,58 @@ router.put("/invoices/:invoiceId/approve", async (req, res) => {
         const [admin] = await connection.execute(checkAdminQuery, [adminId]);
 
         if (admin.length === 0) {
-            console.log(`User ${adminId} does not have admin role`);
             return res.status(403).json({ error: "Bạn không có quyền admin" });
         }
 
-        // Kiểm tra hóa đơn có tồn tại và ở trạng thái pending
         const checkInvoiceQuery = `
-            SELECT booking_id
-            FROM invoices
-            WHERE invoice_id = ? AND status = 'pending'
+            SELECT i.booking_id, i.user_id, i.amount, b.status
+            FROM invoices i
+            JOIN booking b ON i.booking_id = b.booking_id
+            WHERE i.invoice_id = ? AND i.status = 'pending'
         `;
         const [invoice] = await connection.execute(checkInvoiceQuery, [invoiceId]);
 
         if (invoice.length === 0) {
-            console.log(`Invoice ${invoiceId} not found or not in pending state`);
             return res.status(404).json({ error: "Không tìm thấy hóa đơn hoặc hóa đơn không ở trạng thái chờ duyệt" });
         }
 
-        // Cập nhật trạng thái hóa đơn thành completed
+        const { booking_id, user_id, amount } = invoice[0];
+
+        // Kiểm tra số dư người dùng
+        const [user] = await connection.execute(`SELECT balance FROM signup WHERE signup_id = ?`, [user_id]);
+        if (user[0].balance < amount) {
+            return res.status(400).json({ error: "Số dư người dùng không đủ để hoàn tất thanh toán" });
+        }
+
+        // Trừ số dư người dùng
+        const updateUserBalanceQuery = `
+            UPDATE signup
+            SET balance = balance - ?
+            WHERE signup_id = ? AND balance >= ?
+        `;
+        const [balanceUpdate] = await connection.execute(updateUserBalanceQuery, [amount, user_id, amount]);
+        if (balanceUpdate.affectedRows === 0) {
+            throw new Error("Số dư không đủ để thực hiện giao dịch");
+        }
+
+        // Cộng số dư cho admin (lấy admin đầu tiên)
+        const findAdminQuery = `
+            SELECT signup_id FROM role WHERE role_name = 'admin' LIMIT 1
+        `;
+        const [adminData] = await connection.execute(findAdminQuery);
+        if (!adminData[0]) {
+            throw new Error("Không tìm thấy tài khoản admin");
+        }
+        const adminIdToUpdate = adminData[0].signup_id;
+
+        const updateAdminBalanceQuery = `
+            UPDATE signup
+            SET balance = balance + ?
+            WHERE signup_id = ?
+        `;
+        await connection.execute(updateAdminBalanceQuery, [amount, adminIdToUpdate]);
+
+        // Cập nhật trạng thái hóa đơn
         const updateInvoiceQuery = `
             UPDATE invoices
             SET status = 'completed'
@@ -531,32 +507,25 @@ router.put("/invoices/:invoiceId/approve", async (req, res) => {
         `;
         await connection.execute(updateInvoiceQuery, [invoiceId]);
 
-        // Cập nhật trạng thái booking thành 2 (đã duyệt phòng)
+        // Cập nhật trạng thái booking thành 2 (Đã thanh toán)
         const updateBookingQuery = `
             UPDATE booking
             SET status = 2
             WHERE booking_id = ?
         `;
-        await connection.execute(updateBookingQuery, [invoice[0].booking_id]);
+        await connection.execute(updateBookingQuery, [booking_id]);
 
         await connection.commit();
-
         console.log(`Invoice ${invoiceId} approved successfully`);
         res.json({ message: "Xác nhận hóa đơn thành công" });
     } catch (error) {
         if (connection) await connection.rollback();
-        console.error("Error approving invoice:", {
-            message: error.message,
-            stack: error.stack,
-            invoiceId: req.params.invoiceId
-        });
+        console.error("Error approving invoice:", error);
         res.status(500).json({ error: "Internal server error", details: error.message });
     } finally {
         if (connection) await connection.release();
-        console.log("Database connection released for PUT /invoices/:invoiceId/approve endpoint");
     }
 });
-
 // Từ chối hóa đơn
 router.put("/invoices/:invoiceId/reject", async (req, res) => {
     let connection;
@@ -585,9 +554,9 @@ router.put("/invoices/:invoiceId/reject", async (req, res) => {
             return res.status(403).json({ error: "Bạn không có quyền admin" });
         }
 
-        // Lấy thông tin hóa đơn để hoàn tiền
+        // Kiểm tra hóa đơn
         const invoiceQuery = `
-            SELECT booking_id, user_id, amount
+            SELECT booking_id
             FROM invoices
             WHERE invoice_id = ? AND status = 'pending'
         `;
@@ -598,36 +567,7 @@ router.put("/invoices/:invoiceId/reject", async (req, res) => {
             return res.status(404).json({ error: "Không tìm thấy hóa đơn hoặc hóa đơn không ở trạng thái chờ duyệt" });
         }
 
-        const { booking_id, user_id, amount } = invoice[0];
-
-        // Hoàn tiền cho người dùng
-        const refundUserQuery = `
-            UPDATE signup
-            SET balance = balance + ?
-            WHERE signup_id = ?
-        `;
-        await connection.execute(refundUserQuery, [amount, user_id]);
-
-        // Trừ tiền từ admin
-        const findAdminQuery = `
-            SELECT signup_id
-            FROM role
-            WHERE role_name = 'admin'
-            LIMIT 1
-        `;
-        const [adminData] = await connection.execute(findAdminQuery);
-        if (!adminData[0]) {
-            console.log("No admin found");
-            return res.status(500).json({ error: "Không tìm thấy admin" });
-        }
-        const adminIdToUpdate = adminData[0].signup_id;
-
-        const refundAdminQuery = `
-            UPDATE signup
-            SET balance = balance - ?
-            WHERE signup_id = ?
-        `;
-        await connection.execute(refundAdminQuery, [amount, adminIdToUpdate]);
+        const { booking_id } = invoice[0];
 
         // Cập nhật trạng thái hóa đơn thành rejected
         const updateInvoiceQuery = `
@@ -637,7 +577,7 @@ router.put("/invoices/:invoiceId/reject", async (req, res) => {
         `;
         await connection.execute(updateInvoiceQuery, [invoiceId]);
 
-        // Cập nhật trạng thái booking thành -1 (không được xác nhận)
+        // Cập nhật trạng thái booking thành -1 (hủy)
         const updateBookingQuery = `
             UPDATE booking
             SET status = -1
@@ -646,7 +586,6 @@ router.put("/invoices/:invoiceId/reject", async (req, res) => {
         await connection.execute(updateBookingQuery, [booking_id]);
 
         await connection.commit();
-
         console.log(`Invoice ${invoiceId} rejected successfully`);
         res.json({ message: "Từ chối hóa đơn thành công" });
     } catch (error) {
@@ -660,8 +599,9 @@ router.put("/invoices/:invoiceId/reject", async (req, res) => {
     } finally {
         if (connection) await connection.release();
         console.log("Database connection released for PUT /invoices/:invoiceId/reject endpoint");
+        }
     }
-});
+);
 
 // Lấy số dư của người dùng
 router.get("/:userId/balance", async (req, res) => {

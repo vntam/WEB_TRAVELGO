@@ -1,215 +1,170 @@
 .deposit-container {
-    max-width: 500px;
-    margin: 40px auto;
-    padding: 30px;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    font-family: 'Arial', sans-serif;
-}
-
-.deposit-container h2 {
-    color: #1e3a8a;
-    margin-bottom: 25px;
-    font-size: 28px;
-    font-weight: 600;
-}
-
-.deposit-options {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    flex-wrap: wrap;
-    margin-bottom: 30px;
-}
-
-.deposit-options button {
-    padding: 12px 25px;
-    background-color: #3b82f6;
-    color: white;
-    border: none;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff; /* Gradient nền cho container */
     border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: transform 0.2s, background-color 0.2s;
-    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
-}
-
-.deposit-options button:hover {
-    background-color: #2563eb;
-    transform: translateY(-2px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    color: #333;
 }
 
 .deposit-form {
     display: flex;
     flex-direction: column;
+    gap: 15px;
+}
+
+.payment-method {
+    display: flex;
     align-items: center;
+    gap: 10px;
 }
 
-.deposit-form label {
-    font-weight: 500;
-    color: #374151;
-    margin-bottom: 10px;
+.payment-method select {
+    padding: 8px;
     font-size: 16px;
-}
-
-.deposit-form input[type="number"] {
-    padding: 12px;
+    border: 1px solid #b2ebf2;
+    border-radius: 4px;
     width: 100%;
-    max-width: 350px;
-    margin-bottom: 20px;
-    border: 2px solid #e5e7eb;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-}
-
-.deposit-form input[type="number"]:focus {
-    outline: none;
-    border-color: #3b82f6;
-}
-
-.deposit-form button {
-    padding: 14px 30px;
-    background-color: #10b981;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s, transform 0.2s;
-    box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
-}
-
-.deposit-form button:hover {
-    background-color: #059669;
-    transform: translateY(-2px);
-}
-
-.error {
-    color: #dc2626;
-    margin-bottom: 15px;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.success {
-    color: #10b981;
-    margin-bottom: 15px;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.deposit-container {
-    font-family: Arial, sans-serif;
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 20px;
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.deposit-container h2 {
-    text-align: center;
+    max-width: 300px;
+    background: #fff;
     color: #333;
-    margin-bottom: 20px;
 }
 
-.deposit-form {
+.payment-logo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.deposit-details {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.deposit-form label {
-    font-weight: bold;
+.quick-amounts {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.quick-amounts button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px; /* Bo tròn nút */
+    background: linear-gradient(90deg, #4fc3f7, #03a9f4); /* Gradient cho nút */
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.3s, background 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Thêm bóng nhẹ */
+}
+
+.quick-amounts button:hover {
+    transform: scale(1.05); /* Phóng to khi hover */
+    background: linear-gradient(90deg, #03a9f4, #0288d1); /* Gradient thay đổi khi hover */
+}
+
+.quick-amounts button.selected {
+    background: linear-gradient(90deg, #0288d1, #01579b); /* Gradient cho nút đã chọn */
+    transform: scale(1.1); /* Phóng to khi đã chọn */
+}
+
+input[type="number"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #b2ebf2;
+    border-radius: 4px;
+    width: 100%;
+    max-width: 300px;
+    background: #fff;
     color: #333;
 }
 
-.deposit-form select,
-.deposit-form input {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1em;
+.qr-section {
+    text-align: center;
+    margin: 20px 0;
+    background: #fff; /* Gradient cho phần QR */
+    padding: 15px;
+    border-radius: 8px;
 }
 
-.deposit-form select {
-    appearance: none;
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="%23333" viewBox="0 0 16 16"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>') no-repeat right 10px center;
-    padding-right: 30px;
-}
-
-.deposit-options {
-    display: flex;
-    justify-content: space-between;
+.qr-code {
     margin: 10px 0;
-    gap: 5px;
 }
 
-.deposit-options button {
-    padding: 8px 15px;
-    background: linear-gradient(90deg, #4CAF50, #388E3C);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-    flex: 1;
+.qr-code img {
+    width: 200px;
+    height: 200px;
+    border: 2px solid #03a9f4; /* Viền màu xanh gradient */
+    border-radius: 8px;
+    background: #fff; /* Nền trắng cho QR */
 }
 
-.deposit-options button:hover {
-    background: linear-gradient(90deg, #45a049, #2E7D32);
+.qr-code a {
+    display: block;
+    margin-top: 5px;
+    color: #0288d1;
+    text-decoration: none;
+    font-weight: bold;
 }
 
-.deposit-form button[type="submit"] {
-    padding: 12px;
-    background: linear-gradient(90deg, #4CAF50, #388E3C);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.deposit-form button[type="submit"]:disabled {
-    background: linear-gradient(90deg, #95a5a6, #7f8c8d);
-    cursor: not-allowed;
-}
-
-.deposit-form button[type="submit"]:hover:not(:disabled) {
-    background: linear-gradient(90deg, #45a049, #2E7D32);
+.qr-note {
+    font-size: 14px;
+    color: #666;
 }
 
 .error {
     color: #d32f2f;
-    font-size: 0.9em;
-    margin-top: 5px;
+    margin: 5px 0;
+    background: #ffebee;
+    padding: 5px;
+    border-radius: 4px;
 }
 
 .success {
     color: #2e7d32;
-    font-size: 0.9em;
-    margin-top: 5px;
+    margin: 5px 0;
+    background: #e8f5e9;
+    padding: 5px;
+    border-radius: 4px;
 }
 
-
-/* Responsive Design */
-@media (max-width: 600px) {
-    .deposit-container {
-        margin: 20px;
-        padding: 20px;
-    }
-
-    .deposit-options button {
-        padding: 10px 15px;
-        font-size: 14px;
-    }
-
-    .deposit-form input[type="number"] {
-        max-width: 100%;
-    }
+button[type="submit"] {
+    padding: 12px;
+    background: linear-gradient(90deg, #4fc3f7, #03a9f4); /* Gradient cho nút submit */
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    max-width: 200px;
+    align-self: center;
+    transition: transform 0.3s, background 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+button[type="submit"]:hover {
+    transform: scale(1.05);
+    background: linear-gradient(90deg, #03a9f4, #0288d1);
+}
+
+button[type="submit"]:disabled {
+    background: #b0bec5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.instructions {
+    margin-top: 20px;
+    padding: 15px;
+    background: #fff; /* Gradient cho hướng dẫn */
+    border-radius: 8px;
+    color: #333;
+}
+
+.instructions ol {
+    padding-left: 20px;
+}
